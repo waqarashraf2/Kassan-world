@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
     <title>Admin Login | KISANWORLD</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-frontend-assets />
 </head>
 <body class="admin-login-body">
     <main class="admin-login-card">

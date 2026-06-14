@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
     <title>@yield('title', 'Admin') | KISANWORLD</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <x-frontend-assets />
 </head>
 <body class="admin-body">
     <div class="admin-shell">
