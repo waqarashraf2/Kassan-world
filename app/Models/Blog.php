@@ -30,7 +30,17 @@ class Blog extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('status', 'published')->where('published_at', '<=', now());
+        return $query
+            ->where('status', 'published')
+            ->where(fn (Builder $query) => $query
+                ->whereNull('published_at')
+                ->orWhere('published_at', '<=', now()));
+    }
+
+    public function isPubliclyVisible(): bool
+    {
+        return $this->status === 'published'
+            && ($this->published_at === null || $this->published_at->lte(now()));
     }
 
     public function category(): BelongsTo

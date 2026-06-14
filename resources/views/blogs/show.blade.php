@@ -8,7 +8,7 @@
 @section('og_type', 'article')
 @section('og_image', $blog->featured_image_url ?: asset('logos and images/hero-1920.jpg'))
 
-@section('head')
+@push('head')
     <script type="application/ld+json">{!! json_encode([
         '@'.'context' => 'https://schema.org',
         '@type' => 'Article',
@@ -21,7 +21,7 @@
         ],
         'image' => $blog->featured_image_url ?: asset('logos and images/hero-1920.jpg'),
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
-@endsection
+@endpush
 
 @section('content')
     <x-page-hero

@@ -17,7 +17,7 @@
     <div class="admin-card-head"><div><h2>Publishing and featured image</h2><p>The uploaded image is used on blog cards, the detail page and social schema.</p></div></div>
     <div class="admin-field-grid">
         <label>Status<select name="status"><option value="draft" @selected(old('status',$editingBlog?->status ?? 'draft')==='draft')>Draft</option><option value="published" @selected(old('status',$editingBlog?->status)==='published')>Published</option><option value="archived" @selected(old('status',$editingBlog?->status)==='archived')>Archived</option></select></label>
-        <label>Published at<input type="datetime-local" name="published_at" value="{{ old('published_at',$editingBlog?->published_at?->format('Y-m-d\TH:i')) }}"></label>
+        <label>Published at <small>Leave blank to publish immediately. Use a future time to schedule.</small><input type="datetime-local" name="published_at" value="{{ old('published_at',$editingBlog?->published_at?->format('Y-m-d\TH:i')) }}"></label>
         <label>Featured image<input type="file" name="featured_image_file" accept="image/jpeg,image/png,image/webp" data-image-input></label>
         <label>Featured image alt text<input name="featured_image_alt" value="{{ old('featured_image_alt',$editingBlog?->featured_image_alt) }}" placeholder="Describe the image for accessibility and SEO"></label>
         <div class="admin-upload-preview admin-span-2 {{ $editingBlog?->featured_image_url ? 'has-image' : '' }}" data-image-preview>

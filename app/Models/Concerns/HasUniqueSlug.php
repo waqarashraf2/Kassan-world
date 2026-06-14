@@ -10,7 +10,7 @@ trait HasUniqueSlug
     protected static function bootHasUniqueSlug(): void
     {
         static::saving(function (Model $model): void {
-            if (! $model->getAttribute('slug') || $model->isDirty($model->slugSource())) {
+            if (! $model->getAttribute('slug')) {
                 $model->setAttribute('slug', static::uniqueSlug(
                     (string) $model->getAttribute($model->slugSource()),
                     $model->getKey()

@@ -101,3 +101,115 @@ test('public media route rejects paths outside uploads', function () {
     $this->get('/media/../.env')->assertNotFound();
     $this->get('/media/product-media/demo/agriculture-field-1.jpg')->assertNotFound();
 });
+
+test('admin published article without a date is immediately visible on frontend', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $category = BlogCategory::create([
+        'name' => 'Immediate Guides',
+        'slug' => 'immediate-guides',
+        'language' => 'en',
+    ]);
+
+    $this->actingAs($admin)->post(route('admin.blogs.store'), [
+        'blog_category_id' => $category->id,
+        'title' => 'Immediately Published Article',
+        'language' => 'en',
+        'content' => '<p>This article should be public now.</p>',
+        'status' => 'published',
+        'published_at' => null,
+    ])->assertSessionHasNoErrors();
+
+    $blog = Blog::where('title', 'Immediately Published Article')->firstOrFail();
+
+    expect($blog->published_at)->toBeNull()
+        ->and($blog->isPubliclyVisible())->toBeTrue()
+        ->and(Blog::published()->whereKey($blog)->exists())->toBeTrue();
+
+    $this->get(route('blogs.english.index'))
+        ->assertOk()
+        ->assertSee($blog->title);
+
+    expect(
+        Blog::published()
+            ->where('language', 'en')
+            ->where('slug', $blog->slug)
+            ->exists()
+    )->toBeTrue();
+});
+
+test('future dated article remains scheduled until its publication time', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $category = BlogCategory::create([
+        'name' => 'Scheduled Guides',
+        'slug' => 'scheduled-guides',
+        'language' => 'en',
+    ]);
+
+    $this->actingAs($admin)->post(route('admin.blogs.store'), [
+        'blog_category_id' => $category->id,
+        'title' => 'Scheduled Article',
+        'language' => 'en',
+        'content' => '<p>Not public yet.</p>',
+        'status' => 'published',
+        'published_at' => now()->addDay()->format('Y-m-d\TH:i'),
+    ])->assertSessionHasNoErrors();
+
+    $blog = Blog::where('title', 'Scheduled Article')->firstOrFail();
+
+    expect(Blog::published()->whereKey($blog)->exists())->toBeFalse();
+    $this->get(route('blogs.english.show', $blog->slug))->assertNotFound();
+});
+
+test('editing an article title does not silently change its published URL', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $category = BlogCategory::create([
+        'name' => 'Stable URLs',
+        'slug' => 'stable-urls',
+        'language' => 'en',
+    ]);
+    $blog = Blog::create([
+        'blog_category_id' => $category->id,
+        'author_id' => $admin->id,
+        'title' => 'Original Article Title',
+        'language' => 'en',
+        'content' => '<p>Original content.</p>',
+        'status' => 'published',
+    ]);
+    $originalSlug = $blog->slug;
+
+    $this->actingAs($admin)->put(route('admin.blogs.update', $blog), [
+        'blog_category_id' => $category->id,
+        'title' => 'Updated Article Title',
+        'slug' => $originalSlug,
+        'language' => 'en',
+        'content' => '<p>Updated content.</p>',
+        'status' => 'published',
+    ])->assertSessionHasNoErrors();
+
+    expect($blog->refresh()->slug)->toBe($originalSlug);
+    expect(
+        Blog::published()
+            ->where('language', 'en')
+            ->where('slug', $originalSlug)
+            ->value('title')
+    )->toBe('Updated Article Title');
+});
+
+test('article language must match its selected category language', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $urduCategory = BlogCategory::create([
+        'name' => 'Urdu Category',
+        'slug' => 'urdu-category',
+        'language' => 'ur',
+    ]);
+
+    $this->actingAs($admin)->post(route('admin.blogs.store'), [
+        'blog_category_id' => $urduCategory->id,
+        'title' => 'English Article',
+        'language' => 'en',
+        'content' => '<p>English content.</p>',
+        'status' => 'published',
+    ])->assertSessionHasErrors('blog_category_id');
+
+    expect(Blog::where('title', 'English Article')->exists())->toBeFalse();
+});

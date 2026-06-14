@@ -17,7 +17,13 @@ class BlogRequest extends FormRequest
         $blog = $this->route('blog');
 
         return [
-            'blog_category_id' => ['required', 'exists:blog_categories,id'],
+            'blog_category_id' => [
+                'required',
+                Rule::exists('blog_categories', 'id')->where(fn ($query) => $query
+                    ->where('language', $this->input('language'))
+                    ->where('is_active', true)
+                    ->whereNull('deleted_at')),
+            ],
             'title' => ['required', 'string', 'max:255'],
             'slug' => [
                 'nullable', 'string', 'max:255',
