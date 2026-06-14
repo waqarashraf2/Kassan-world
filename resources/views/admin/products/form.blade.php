@@ -68,7 +68,7 @@
         <label class="admin-span-2">Meta description<textarea name="meta_description" rows="3" maxlength="500">{{ old('meta_description',$editingProduct?->meta_description) }}</textarea></label>
         <label>Social sharing image<input type="file" name="og_image_file" accept="image/jpeg,image/png,image/webp"></label>
         @if($editingProduct?->og_image)
-            <div class="admin-current-file"><span>Current social image</span><img src="{{ str_starts_with($editingProduct->og_image,'uploads/') ? asset('storage/'.$editingProduct->og_image) : asset(ltrim($editingProduct->og_image,'/')) }}" alt=""><label class="admin-check-field"><input type="checkbox" name="remove_og_image" value="1"> Remove</label></div>
+            <div class="admin-current-file"><span>Current social image</span><img src="{{ $editingProduct->og_image_url }}" alt=""><label class="admin-check-field"><input type="checkbox" name="remove_og_image" value="1"> Remove</label></div>
         @endif
     </div>
 </section>

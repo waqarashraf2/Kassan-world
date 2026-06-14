@@ -26,7 +26,7 @@ class ProductImage extends Model
     public function getUrlAttribute(): string
     {
         return Str::startsWith($this->path, 'uploads/')
-            ? asset('storage/'.$this->path)
+            ? route('media.show', ['path' => $this->path])
             : asset(ltrim($this->path, '/'));
     }
 }

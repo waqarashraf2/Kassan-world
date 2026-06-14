@@ -21,11 +21,15 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MagazineController;
 use App\Http\Controllers\MagazinePurchaseController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PublicMediaController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/media/{path}', PublicMediaController::class)
+    ->where('path', 'uploads/.*')
+    ->name('media.show');
 Route::get('/home/products', [HomeController::class, 'products'])->name('home.products');
 Route::view('/about-us', 'about')->name('about');
 

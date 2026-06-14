@@ -50,7 +50,7 @@ class Blog extends Model
         }
 
         return Str::startsWith($this->featured_image, 'uploads/')
-            ? asset('storage/'.$this->featured_image)
+            ? route('media.show', ['path' => $this->featured_image])
             : asset(ltrim($this->featured_image, '/'));
     }
 }

@@ -3,7 +3,7 @@
     RewriteEngine On
 
     # Serve only explicitly public assets from the Laravel public directory.
-    RewriteRule ^(build|logos%20and%20images|logos\ and\ images|products|storage)/(.*)$ public/$1/$2 [L,NE]
+    RewriteRule ^(build|logos%20and%20images|logos\ and\ images|product-media|storage)/(.*)$ public/$1/$2 [L,NE]
     RewriteRule ^(favicon\.ico|robots\.txt)$ public/$1 [L]
 
     RewriteRule ^index\.php$ - [L]

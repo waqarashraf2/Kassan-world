@@ -77,7 +77,7 @@ class Product extends Model
         }
 
         return Str::startsWith($this->og_image, 'uploads/')
-            ? asset('storage/'.$this->og_image)
+            ? route('media.show', ['path' => $this->og_image])
             : asset(ltrim($this->og_image, '/'));
     }
 }

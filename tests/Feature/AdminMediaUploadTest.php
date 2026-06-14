@@ -43,8 +43,13 @@ test('administrator can create a product with uploaded gallery images and safe r
 
     $this->get(route('products.show', $product))
         ->assertOk()
-        ->assertSee('storage/uploads/products/'.$product->id, false)
+        ->assertSee('media/uploads/products/'.$product->id, false)
         ->assertSee('<h2>Benefits</h2>', false);
+
+    $this->get($product->images->first()->url)
+        ->assertOk()
+        ->assertHeader('cache-control', 'immutable, max-age=31536000, public')
+        ->assertHeader('x-content-type-options', 'nosniff');
 });
 
 test('administrator can upload and replace a blog featured image', function () {
@@ -88,6 +93,11 @@ test('administrator can upload and replace a blog featured image', function () {
     Storage::disk('public')->assertExists($blog->featured_image);
 
     expect($blog->featured_image_url)
-        ->toContain('/storage/'.$blog->featured_image)
+        ->toContain('/media/'.$blog->featured_image)
         ->and($blog->featured_image_alt)->toBe('Updated wheat crop');
+});
+
+test('public media route rejects paths outside uploads', function () {
+    $this->get('/media/../.env')->assertNotFound();
+    $this->get('/media/product-media/demo/agriculture-field-1.jpg')->assertNotFound();
 });

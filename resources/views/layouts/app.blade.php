@@ -9,6 +9,7 @@
     <link rel="canonical" href="@yield('canonical', url()->current())">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="KISANWORLD">
+    <link rel="icon" type="image/jpeg" sizes="32x32" href="{{ asset('logos and images/Kisaan world.jpeg') }}">
     <meta property="og:title" content="@yield('og_title', 'KISANWORLD | کسان ورلڈ')">
     <meta property="og:description" content="@yield('og_description', 'Products, knowledge and trusted guidance for better farming.')">
     <meta property="og:url" content="{{ url()->current() }}">
@@ -17,7 +18,7 @@
     <meta name="twitter:title" content="@yield('og_title', 'KISANWORLD | کسان ورلڈ')">
     <meta name="twitter:description" content="@yield('og_description', 'Products, knowledge and trusted guidance for better farming.')">
     <meta name="twitter:image" content="@yield('og_image', asset('logos and images/hero-1920.jpg'))">
-    <link rel="preload" as="image" href="{{ asset('logos and images/hero-1920.jpg') }}" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ asset('logos and images/Kisaan world.jpeg') }}" fetchpriority="high">
     <x-frontend-assets />
     @yield('head')
     @stack('head')
