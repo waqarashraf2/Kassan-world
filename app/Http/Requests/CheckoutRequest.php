@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CheckoutRequest extends FormRequest
 {
@@ -21,9 +22,22 @@ class CheckoutRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'payment_method' => ['required', 'in:cash_on_delivery,bank_transfer'],
+            'create_account' => ['nullable', 'boolean'],
+            'password' => ['nullable', 'required_if:create_account,1', 'confirmed', 'min:8'],
+            'save_address' => ['nullable', 'boolean'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'integer', 'distinct', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:100'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->sometimes('customer_email', [
+            'required',
+            'email',
+            'max:255',
+            Rule::unique('users', 'email'),
+        ], fn () => ! $this->user() && $this->boolean('create_account'));
     }
 }

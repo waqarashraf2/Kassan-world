@@ -37,6 +37,9 @@ test('administrator can open all primary admin pages', function () {
         route('admin.orders.index'),
         route('admin.magazine-purchases.index'),
         route('admin.contacts.index'),
+        route('admin.chats.index'),
+        route('admin.chatbot-faqs.index'),
+        route('admin.support-tickets.index'),
         route('admin.settings.edit'),
     ];
 

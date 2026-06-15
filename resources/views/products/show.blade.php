@@ -40,6 +40,7 @@
         <div class="detail-price"><strong>Rs. {{ number_format((float)$product->sale_price) }}</strong>@if($product->discount_price)<del>Rs. {{ number_format((float)$product->price) }}</del>@endif</div>
         <p>{{ $product->short_description }}</p>
         <form action="{{ route('cart.store', $product) }}" method="POST" class="buy-form" data-ajax-cart>@csrf<label>Quantity<input type="number" name="quantity" min="1" max="100" value="1"></label><button class="button button-primary" @disabled(!$product->in_stock)><span class="button-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 10h10l2-7H7M10 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg></span><span data-button-label>Add to Cart</span></button><a href="tel:+92{{ ltrim($siteSettings['site_phone'] ?? '03226780242', '0') }}" class="button outline-button">Call to order</a></form>
+        @auth<form action="{{ route('customer.wishlist.toggle', $product) }}" method="POST" class="detail-wishlist">@csrf<button type="submit">Save this product to wishlist</button></form>@endauth
     </div>
 </section>
 @if($product->description || $product->description_ur)

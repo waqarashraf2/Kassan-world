@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactRequest;
+use App\Mail\ContactReceivedMail;
 use App\Models\Contact;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -14,7 +17,15 @@ class ContactController extends Controller
 
     public function store(StoreContactRequest $request)
     {
-        Contact::create($request->validated());
+        $contact = Contact::create($request->validated());
+
+        if ($contact->email) {
+            try {
+                Mail::to($contact->email)->queue(new ContactReceivedMail($contact));
+            } catch (\Throwable $exception) {
+                Log::error('Contact auto-reply could not be queued.', ['contact' => $contact->id, 'error' => $exception->getMessage()]);
+            }
+        }
 
         return back()->with('success', __('Thank you. We will contact you soon.'));
     }

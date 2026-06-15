@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('home'));
+        return redirect()->intended(route('customer.dashboard'));
     }
 
     public function registerForm()
@@ -52,7 +52,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('home');
+        return redirect()->route('customer.dashboard');
     }
 
     public function logout(Request $request)

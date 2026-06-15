@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0d6b3b">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'KISANWORLD | کسان ورلڈ')</title>
     <meta name="description" content="@yield('meta_description', 'KISANWORLD brings trusted agricultural products, practical farming knowledge, videos and magazines to Pakistan’s farmers.')">
     <link rel="canonical" href="@yield('canonical', url()->current())">
@@ -26,8 +27,10 @@
 <body class="bg-stone-50 text-slate-900 antialiased">
     <a href="#main-content" class="skip-link">Skip to content</a>
     <x-site-header />
+    @if(session('success'))<div class="site-toast success" role="status">{{ session('success') }}</div>@endif
     <main id="main-content">@yield('content')</main>
     <x-site-footer />
+    <x-chat-widget />
     @stack('scripts')
 </body>
 </html>

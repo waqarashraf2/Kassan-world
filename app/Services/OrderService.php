@@ -62,6 +62,12 @@ class OrderService
                 }
             }
 
+            $order->statusEvents()->create([
+                'status' => 'pending',
+                'note' => 'Order received.',
+                'occurred_at' => now(),
+            ]);
+
             return $order->load('items');
         });
     }

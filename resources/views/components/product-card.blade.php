@@ -9,6 +9,9 @@
 @endphp
 <article class="product-card reveal-card" data-product-card data-images='@json($images->isNotEmpty() ? $images : [$fallback])' data-interval="10000">
     <div class="product-media">
+        @auth
+            <form action="{{ route('customer.wishlist.toggle', $product) }}" method="POST" class="wishlist-toggle">@csrf<button type="submit" aria-label="Save {{ $product->name }} to wishlist"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></form>
+        @endauth
         <a href="{{ route('products.show', $product) }}" class="product-image-link" aria-label="View {{ $product->name }}">
             <img src="{{ $primaryImage }}" alt="{{ $product->images->first()?->alt_text ?: $product->name }}" width="600" height="600" loading="lazy" decoding="async" data-product-image>
         </a>

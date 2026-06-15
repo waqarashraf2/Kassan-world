@@ -6,6 +6,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,8 +23,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
+        'google_id',
         'phone',
+        'avatar_path',
         'role',
+        'email_notifications',
+        'chat_available',
+        'last_seen_at',
         'password',
     ];
 
@@ -46,6 +53,9 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'email_notifications' => 'boolean',
+            'chat_available' => 'boolean',
+            'last_seen_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -63,6 +73,21 @@ class User extends Authenticatable
     public function magazinePurchases(): HasMany
     {
         return $this->hasMany(MagazinePurchase::class);
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function wishlistProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'wishlists')->withTimestamps();
+    }
+
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
     }
 
     public function isAdmin(): bool

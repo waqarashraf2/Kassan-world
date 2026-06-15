@@ -5,6 +5,26 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+document.querySelector('[data-account-toggle]')?.addEventListener('change', (event) => {
+    const fields = document.querySelector('[data-account-fields]');
+    if (!fields) return;
+    fields.hidden = !event.target.checked;
+    fields.querySelectorAll('input').forEach((input) => {
+        input.required = event.target.checked;
+    });
+});
+
+const accountToggle = document.querySelector('[data-account-toggle]');
+if (accountToggle?.checked) {
+    document.querySelectorAll('[data-account-fields] input').forEach((input) => { input.required = true; });
+}
+
+const siteToast = document.querySelector('.site-toast');
+if (siteToast) {
+    window.setTimeout(() => siteToast.classList.add('is-hidden'), 4500);
+}
 
 const adminMenuButton = document.querySelector('[data-admin-menu]');
 const adminSidebar = document.querySelector('[data-admin-sidebar]');
@@ -356,4 +376,177 @@ if (grid && loader) {
     }, { rootMargin: '300px 0px' });
 
     observer.observe(loader);
+}
+
+const chatWidget = document.querySelector('[data-chat-widget]');
+if (chatWidget) {
+    const toggle = chatWidget.querySelector('[data-chat-toggle]');
+    const close = chatWidget.querySelector('[data-chat-close]');
+    const panel = chatWidget.querySelector('[data-chat-panel]');
+    const form = chatWidget.querySelector('[data-chat-form]');
+    const input = form?.querySelector('textarea');
+    const messages = chatWidget.querySelector('[data-chat-messages]');
+    const status = chatWidget.querySelector('[data-chat-status]');
+    const liveButton = chatWidget.querySelector('[data-chat-live]');
+    const visitorKey = 'kisanworld_chat_visitor';
+    const conversationKey = 'kisanworld_chat_conversation';
+    const makeUuid = () => window.crypto?.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+        const random = Math.random() * 16 | 0;
+        return (char === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
+    });
+    let visitorToken = localStorage.getItem(visitorKey) || makeUuid();
+    let conversationId = localStorage.getItem(conversationKey);
+    let lastMessageId = 0;
+    let polling;
+    localStorage.setItem(visitorKey, visitorToken);
+
+    const setOpen = (open) => {
+        panel.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+        if (open) {
+            input?.focus();
+            startPolling();
+        } else if (polling) {
+            window.clearInterval(polling);
+            polling = null;
+        }
+    };
+
+    const appendMessage = (item) => {
+        if (!item || (item.id && messages.querySelector(`[data-message-id="${item.id}"]`))) return;
+        const row = document.createElement('div');
+        row.className = `chat-message ${item.sender === 'customer' ? 'customer' : item.sender}`;
+        if (item.id) row.dataset.messageId = item.id;
+        const badge = document.createElement('span');
+        badge.textContent = item.sender === 'customer' ? 'You' : item.sender === 'admin' ? 'KW' : 'K';
+        const text = document.createElement('p');
+        text.textContent = item.message;
+        row.append(badge, text);
+        messages.append(row);
+        messages.scrollTo({ top: messages.scrollHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+        lastMessageId = Math.max(lastMessageId, Number(item.id || 0));
+    };
+
+    const post = async (url, body) => {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken },
+            body: JSON.stringify(body),
+        });
+        if (!response.ok) throw new Error('Chat request failed');
+        return response.json();
+    };
+
+    const send = async (text) => {
+        if (!text.trim()) return;
+        appendMessage({ sender: 'customer', message: text });
+        form.classList.add('is-loading');
+        input.disabled = true;
+        status.textContent = 'Finding the best answer...';
+        try {
+            const data = await post(chatWidget.dataset.messageUrl, {
+                message: text,
+                visitor_token: visitorToken,
+                conversation_id: conversationId,
+            });
+            conversationId = data.conversation_id;
+            localStorage.setItem(conversationKey, conversationId);
+            appendMessage(data.reply);
+            status.textContent = data.mode === 'live'
+                ? (data.admin_online ? 'Live representative available' : 'Waiting for representative')
+                : 'FAQ assistant ready';
+            startPolling();
+        } catch (error) {
+            appendMessage({ sender: 'system', message: 'Support is temporarily unavailable. Please use the contact form or WhatsApp button.' });
+            status.textContent = 'Connection issue';
+        } finally {
+            form.classList.remove('is-loading');
+            input.disabled = false;
+            input.focus();
+        }
+    };
+
+    const poll = async () => {
+        if (!conversationId || panel.hidden) return;
+        try {
+            const url = chatWidget.dataset.pollUrlTemplate.replace('__CONVERSATION__', conversationId);
+            const data = await post(url, { visitor_token: visitorToken, after: lastMessageId });
+            data.messages.forEach(appendMessage);
+            if (data.mode === 'live') status.textContent = data.admin_online ? 'Live representative online' : 'Message saved for support';
+        } catch (error) {
+            // Keep the current conversation visible during a temporary polling failure.
+        }
+    };
+
+    function startPolling() {
+        if (!conversationId || polling) return;
+        polling = window.setInterval(poll, 4000);
+    }
+
+    toggle?.addEventListener('click', () => setOpen(panel.hidden));
+    close?.addEventListener('click', () => setOpen(false));
+    form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const text = input.value;
+        input.value = '';
+        send(text);
+    });
+    chatWidget.querySelectorAll('[data-chat-question]').forEach((button) => {
+        button.addEventListener('click', () => send(button.dataset.chatQuestion));
+    });
+    liveButton?.addEventListener('click', async () => {
+        if (!conversationId) {
+            await send('I would like to talk to a live representative.');
+        }
+        if (!conversationId) return;
+        try {
+            const url = chatWidget.dataset.liveUrlTemplate.replace('__CONVERSATION__', conversationId);
+            const data = await post(url, { visitor_token: visitorToken });
+            appendMessage(data.reply);
+            status.textContent = data.admin_online ? 'Live representative notified' : 'Waiting for representative';
+        } catch (error) {
+            appendMessage({ sender: 'system', message: 'We could not request live support. Please try again shortly.' });
+        }
+    });
+}
+
+const adminChat = document.querySelector('[data-admin-chat]');
+if (adminChat && csrfToken) {
+    const adminMessages = adminChat.querySelector('[data-admin-chat-messages]');
+    let adminLastMessage = Number(adminChat.dataset.lastMessage || 0);
+    const heartbeat = () => fetch(adminChat.dataset.presenceUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        body: JSON.stringify({ available: true }),
+    }).catch(() => {});
+    const pollAdminMessages = async () => {
+        try {
+            const response = await fetch(`${adminChat.dataset.messagesUrl}?after=${adminLastMessage}`, {
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            });
+            if (!response.ok) return;
+            const data = await response.json();
+            data.messages.forEach((item) => {
+                if (adminMessages.querySelector(`[data-message-id="${item.id}"]`)) return;
+                const row = document.createElement('div');
+                row.className = item.sender;
+                row.dataset.messageId = item.id;
+                const sender = document.createElement('strong');
+                sender.textContent = item.sender;
+                const text = document.createElement('p');
+                text.textContent = item.message;
+                const time = document.createElement('small');
+                time.textContent = item.time;
+                row.append(sender, text, time);
+                adminMessages.append(row);
+                adminMessages.scrollTo({ top: adminMessages.scrollHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+                adminLastMessage = Math.max(adminLastMessage, Number(item.id));
+            });
+        } catch (error) {
+            // The next polling cycle will retry.
+        }
+    };
+    heartbeat();
+    window.setInterval(heartbeat, 45000);
+    window.setInterval(pollAdminMessages, 3000);
 }

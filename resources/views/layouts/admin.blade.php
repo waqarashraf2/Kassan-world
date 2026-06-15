@@ -22,6 +22,9 @@
                 <a class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">Orders</a>
                 <a class="{{ request()->routeIs('admin.magazine-purchases.*') ? 'active' : '' }}" href="{{ route('admin.magazine-purchases.index') }}">Magazine Sales</a>
                 <a class="{{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}" href="{{ route('admin.contacts.index') }}">Inquiries</a>
+                <a class="{{ request()->routeIs('admin.chats.*') ? 'active' : '' }}" href="{{ route('admin.chats.index') }}">Live Chat</a>
+                <a class="{{ request()->routeIs('admin.chatbot-faqs.*') ? 'active' : '' }}" href="{{ route('admin.chatbot-faqs.index') }}">Chatbot FAQs</a>
+                <a class="{{ request()->routeIs('admin.support-tickets.*') ? 'active' : '' }}" href="{{ route('admin.support-tickets.index') }}">Support Tickets</a>
                 <a class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.edit') }}">Settings & SEO</a>
             </nav>
             <div class="admin-sidebar-footer">

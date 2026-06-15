@@ -34,4 +34,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function statusEvents(): HasMany
+    {
+        return $this->hasMany(OrderStatusEvent::class)->orderBy('occurred_at');
+    }
 }
