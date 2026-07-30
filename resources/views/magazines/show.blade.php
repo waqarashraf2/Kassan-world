@@ -42,6 +42,7 @@
         @else
             <a class="button button-primary" href="{{ route('login') }}">Login to purchase</a>
         @endauth
+        @endif
     </div>
 </section>
 @endsection
