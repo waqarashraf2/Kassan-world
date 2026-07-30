@@ -9,7 +9,7 @@
         <div>
             <h2>Stay Connected</h2>
             <a href="tel:+92{{ ltrim($siteSettings['site_phone'] ?? '03226780242', '0') }}">{{ $siteSettings['site_phone'] ?? '03226780242' }}</a>
-            <a href="mailto:{{ $siteSettings['site_email'] ?? 'info@kisanworld.pk' }}">{{ $siteSettings['site_email'] ?? 'info@kisanworld.pk' }}</a>
+            <a href="mailto:{{ $siteSettings['site_email'] ?? 'kisanworld.magazine@gmail.com' }}">{{ $siteSettings['site_email'] ?? 'kisanworld.magazine@gmail.com' }}</a>
             <div class="social-links" aria-label="KISANWORLD social media">
                 @if(!empty($siteSettings['whatsapp_url']))
                     <a href="{{ $siteSettings['whatsapp_url'] }}" target="_blank" rel="noopener noreferrer" aria-label="KISANWORLD on WhatsApp" title="WhatsApp">

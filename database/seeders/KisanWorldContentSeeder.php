@@ -170,7 +170,7 @@ class KisanWorldContentSeeder extends Seeder
 
         $settings = [
             ['key' => 'site_phone', 'value' => '03226780242', 'type' => 'phone', 'group' => 'contact'],
-            ['key' => 'site_email', 'value' => 'info@kisanworld.pk', 'type' => 'email', 'group' => 'contact'],
+            ['key' => 'site_email', 'value' => 'kisanworld.magazine@gmail.com', 'type' => 'email', 'group' => 'contact'],
             ['key' => 'site_address', 'value' => 'KISANWORLD Marketing, Lahore, Pakistan', 'type' => 'text', 'group' => 'contact'],
             ['key' => 'whatsapp_url', 'value' => 'https://wa.me/923226780242', 'type' => 'url', 'group' => 'social'],
             ['key' => 'youtube_url', 'value' => 'https://youtu.be/fSwKMJYrbY4', 'type' => 'url', 'group' => 'social'],
