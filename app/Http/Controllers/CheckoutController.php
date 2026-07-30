@@ -7,6 +7,7 @@ use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\GuestOrderClaimService;
 use App\Services\OrderNotificationService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -27,13 +28,14 @@ class CheckoutController extends Controller
     public function store(
         CheckoutRequest $request,
         OrderService $orders,
+        GuestOrderClaimService $guestOrders,
         OrderNotificationService $notifications,
     )
     {
         $data = $request->validated();
         $user = $request->user();
 
-        [$order, $createdUser] = DB::transaction(function () use ($request, $orders, $data, $user): array {
+        [$order, $createdUser] = DB::transaction(function () use ($request, $orders, $guestOrders, $data, $user): array {
             $createdUser = null;
             if (! $user && $request->boolean('create_account')) {
                 $createdUser = User::create([
@@ -47,6 +49,10 @@ class CheckoutController extends Controller
             }
 
             $order = $orders->place($data, $user);
+
+            if ($createdUser) {
+                $guestOrders->claimFor($createdUser);
+            }
 
             if ($user && ($createdUser || $request->boolean('save_address'))) {
                 Address::updateOrCreate([

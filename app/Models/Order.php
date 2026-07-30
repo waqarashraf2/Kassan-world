@@ -21,6 +21,7 @@ class Order extends Model
             'discount_total' => 'decimal:2',
             'shipping_total' => 'decimal:2',
             'grand_total' => 'decimal:2',
+            'payment_details' => 'array',
             'placed_at' => 'datetime',
         ];
     }

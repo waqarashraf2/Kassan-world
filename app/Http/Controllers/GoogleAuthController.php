@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\GuestOrderClaimService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -12,6 +13,10 @@ use Illuminate\Validation\ValidationException;
 
 class GoogleAuthController extends Controller
 {
+    public function __construct(private readonly GuestOrderClaimService $guestOrders)
+    {
+    }
+
     public function redirect(Request $request)
     {
         $this->ensureConfigured();
@@ -86,6 +91,7 @@ class GoogleAuthController extends Controller
 
         Auth::login($user, true);
         $request->session()->regenerate();
+        $this->guestOrders->claimFor($user);
 
         return redirect()->intended(route('customer.dashboard'));
     }

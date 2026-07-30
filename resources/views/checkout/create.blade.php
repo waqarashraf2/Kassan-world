@@ -10,7 +10,14 @@
         <div class="form-grid"><label>Name<input name="customer_name" value="{{ old('customer_name', auth()->user()?->name) }}" required></label><label>Phone<input name="customer_phone" value="{{ old('customer_phone', auth()->user()?->phone) }}" required></label></div>
         <label>Email<input type="email" name="customer_email" value="{{ old('customer_email', auth()->user()?->email) }}"></label>
         <label>Address<textarea name="shipping_address" rows="4" required>{{ old('shipping_address') }}</textarea></label>
-        <div class="form-grid"><label>City<input name="city" value="{{ old('city') }}"></label><label>Payment<select name="payment_method"><option value="cash_on_delivery">Cash on delivery</option><option value="bank_transfer">Bank transfer</option></select></label></div>
+        <div class="form-grid"><label>City<input name="city" value="{{ old('city') }}"></label><label>Payment<select name="payment_method" data-payment-method><option value="cash_on_delivery" @selected(old('payment_method') === 'cash_on_delivery')>Cash on delivery</option><option value="bank_transfer" @selected(old('payment_method') === 'bank_transfer')>Bank transfer</option><option value="online_payment" @selected(old('payment_method') === 'online_payment')>Online payment - Bank Alfalah</option></select></label></div>
+        <div class="online-payment-box" data-online-payment-fields @if(old('payment_method') !== 'online_payment') hidden @endif>
+            <div><span>Bank Alfalah online payment readiness</span><p>These are billing details only. Card number, CVV, PIN, OTP and gateway secret keys must be collected only on Bank Alfalah's secure approved gateway.</p></div>
+            <div class="form-grid"><label>Billing name<input name="billing_name" value="{{ old('billing_name', auth()->user()?->name) }}"></label><label>Billing email<input type="email" name="billing_email" value="{{ old('billing_email', auth()->user()?->email) }}"></label></div>
+            <div class="form-grid"><label>Billing phone<input name="billing_phone" value="{{ old('billing_phone', auth()->user()?->phone) }}"></label><label>Billing city<input name="billing_city" value="{{ old('billing_city') }}"></label></div>
+            <label>Billing address<textarea name="billing_address" rows="3">{{ old('billing_address') }}</textarea></label>
+            <label class="check-label"><input type="checkbox" name="online_payment_consent" value="1" @checked(old('online_payment_consent'))> I understand card details will be entered only on the secure bank payment page after approval.</label>
+        </div>
         <label>Order notes<textarea name="notes" rows="3">{{ old('notes') }}</textarea></label>
         @guest
         <div class="checkout-account" data-checkout-account>

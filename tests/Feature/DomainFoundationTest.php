@@ -179,3 +179,18 @@ test('product and cart pages expose all product images for rotation', function (
         ->assertSee('data-card-next', false)
         ->assertSee('data-interval="10000"', false);
 });
+
+test('product detail page uses ajax cart submit button markup', function () {
+    $category = Category::create(['name' => 'Fertilizers']);
+    $product = Product::create([
+        'category_id' => $category->id,
+        'name' => 'Detail Ajax Product',
+        'price' => 1800,
+        'stock_quantity' => 10,
+    ]);
+
+    $this->get(route('products.show', $product))
+        ->assertOk()
+        ->assertSee('data-ajax-cart', false)
+        ->assertSee('type="submit" class="button button-primary"', false);
+});

@@ -21,6 +21,19 @@ if (accountToggle?.checked) {
     document.querySelectorAll('[data-account-fields] input').forEach((input) => { input.required = true; });
 }
 
+const paymentMethod = document.querySelector('[data-payment-method]');
+const onlinePaymentFields = document.querySelector('[data-online-payment-fields]');
+function updatePaymentFields() {
+    if (!paymentMethod || !onlinePaymentFields) return;
+    const enabled = paymentMethod.value === 'online_payment';
+    onlinePaymentFields.hidden = !enabled;
+    onlinePaymentFields.querySelectorAll('input, textarea').forEach((field) => {
+        field.required = enabled && ['billing_name', 'billing_email', 'billing_phone', 'billing_address', 'online_payment_consent'].includes(field.name);
+    });
+}
+paymentMethod?.addEventListener('change', updatePaymentFields);
+updatePaymentFields();
+
 const siteToast = document.querySelector('.site-toast');
 if (siteToast) {
     window.setTimeout(() => siteToast.classList.add('is-hidden'), 4500);
@@ -287,7 +300,7 @@ document.addEventListener('submit', async (event) => {
     if (!form) return;
 
     event.preventDefault();
-    const button = form.querySelector('button[type="submit"]');
+    const button = form.querySelector('button[type="submit"], button:not([type])');
     const label = button?.querySelector('[data-button-label]');
     if (!button || button.disabled || button.dataset.loading === 'true') return;
 

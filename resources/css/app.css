@@ -343,6 +343,10 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
 .form-alert ul { margin: 6px 0 0; padding-left: 18px; }
 .checkout-account { padding: 16px; display: grid; gap: 13px; border: 1px solid #dce8df; border-radius: 13px; background: #f6faf7; }
 .checkout-account small { color: var(--muted); font-size: .7rem; line-height: 1.55; }
+.online-payment-box { padding: 18px; display: grid; gap: 14px; border: 1px solid rgba(245,130,32,.28); border-radius: 15px; background: linear-gradient(145deg, #fff8ef, #f7fbf5); }
+.online-payment-box[hidden] { display: none; }
+.online-payment-box > div:first-child span { color: var(--orange-500); font-size: .72rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+.online-payment-box > div:first-child p, .payment-safe-note { margin: 6px 0 0; color: #69786f; font-size: .72rem; line-height: 1.65; }
 .site-toast { position: fixed; z-index: 500; top: 125px; left: 50%; max-width: min(520px, calc(100% - 30px)); padding: 13px 18px; transform: translateX(-50%); border-radius: 11px; box-shadow: 0 15px 45px rgba(4,45,28,.2); transition: opacity .25s ease, transform .25s ease; }
 .site-toast.success { border: 1px solid #a8ddba; background: #eaf9ef; color: #176536; }
 .site-toast.is-hidden { opacity: 0; transform: translate(-50%, -12px); pointer-events: none; }

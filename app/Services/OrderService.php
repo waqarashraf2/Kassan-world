@@ -41,6 +41,7 @@ class OrderService
                 'shipping_total' => $shipping,
                 'grand_total' => $subtotal + $shipping,
                 'payment_method' => $data['payment_method'],
+                'payment_details' => $this->paymentDetails($data),
                 'placed_at' => now(),
             ]);
 
@@ -70,5 +71,23 @@ class OrderService
 
             return $order->load('items');
         });
+    }
+
+    private function paymentDetails(array $data): ?array
+    {
+        if (($data['payment_method'] ?? null) !== 'online_payment') {
+            return null;
+        }
+
+        return [
+            'gateway' => 'bank_alfalah',
+            'billing_name' => $data['billing_name'] ?? null,
+            'billing_email' => $data['billing_email'] ?? null,
+            'billing_phone' => $data['billing_phone'] ?? null,
+            'billing_city' => $data['billing_city'] ?? null,
+            'billing_address' => $data['billing_address'] ?? null,
+            'card_collection' => 'redirect_gateway_only',
+            'note' => 'No card number, CVV, PIN, OTP or gateway secret is stored by KISANWORLD.',
+        ];
     }
 }
