@@ -14,7 +14,11 @@ class MagazinePurchase extends Model
 
     protected function casts(): array
     {
-        return ['amount' => 'decimal:2', 'paid_at' => 'datetime'];
+        return [
+            'amount' => 'decimal:2',
+            'payment_details' => 'array',
+            'paid_at' => 'datetime',
+        ];
     }
 
     public function user(): BelongsTo

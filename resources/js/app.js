@@ -21,18 +21,35 @@ if (accountToggle?.checked) {
     document.querySelectorAll('[data-account-fields] input').forEach((input) => { input.required = true; });
 }
 
-const paymentMethod = document.querySelector('[data-payment-method]');
-const onlinePaymentFields = document.querySelector('[data-online-payment-fields]');
-function updatePaymentFields() {
-    if (!paymentMethod || !onlinePaymentFields) return;
-    const enabled = paymentMethod.value === 'online_payment';
-    onlinePaymentFields.hidden = !enabled;
-    onlinePaymentFields.querySelectorAll('input, textarea').forEach((field) => {
-        field.required = enabled && ['billing_name', 'billing_email', 'billing_phone', 'billing_address', 'online_payment_consent'].includes(field.name);
-    });
-}
-paymentMethod?.addEventListener('change', updatePaymentFields);
-updatePaymentFields();
+document.querySelectorAll('[data-payment-scope]').forEach((scope) => {
+    const paymentMethod = scope.querySelector('[data-payment-method]');
+    const onlinePaymentFields = scope.querySelector('[data-online-payment-fields]');
+    const bankTransferFields = scope.querySelector('[data-bank-transfer-fields]');
+    const requiredOnlineFields = ['billing_name', 'billing_email', 'billing_phone', 'billing_address', 'online_payment_consent'];
+
+    const updatePaymentFields = () => {
+        if (!paymentMethod) return;
+        const onlineEnabled = paymentMethod.value === 'online_payment';
+        const bankEnabled = paymentMethod.value === 'bank_transfer';
+
+        if (onlinePaymentFields) {
+            onlinePaymentFields.hidden = !onlineEnabled;
+            onlinePaymentFields.querySelectorAll('input, textarea').forEach((field) => {
+                field.required = onlineEnabled && requiredOnlineFields.includes(field.name);
+            });
+        }
+
+        if (bankTransferFields) {
+            bankTransferFields.hidden = !bankEnabled;
+            bankTransferFields.querySelectorAll('input[type="file"]').forEach((field) => {
+                field.required = bankEnabled;
+            });
+        }
+    };
+
+    paymentMethod.addEventListener('change', updatePaymentFields);
+    updatePaymentFields();
+});
 
 const siteToast = document.querySelector('.site-toast');
 if (siteToast) {

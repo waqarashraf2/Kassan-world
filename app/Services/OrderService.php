@@ -42,6 +42,8 @@ class OrderService
                 'grand_total' => $subtotal + $shipping,
                 'payment_method' => $data['payment_method'],
                 'payment_details' => $this->paymentDetails($data),
+                'payment_proof_path' => $this->paymentProofPath($data),
+                'payment_proof_original_name' => ($data['payment_proof'] ?? null)?->getClientOriginalName(),
                 'placed_at' => now(),
             ]);
 
@@ -89,5 +91,14 @@ class OrderService
             'card_collection' => 'redirect_gateway_only',
             'note' => 'No card number, CVV, PIN, OTP or gateway secret is stored by KISANWORLD.',
         ];
+    }
+
+    private function paymentProofPath(array $data): ?string
+    {
+        if (($data['payment_method'] ?? null) !== 'bank_transfer' || empty($data['payment_proof'])) {
+            return null;
+        }
+
+        return $data['payment_proof']->store('payment-proofs/orders', 'local');
     }
 }

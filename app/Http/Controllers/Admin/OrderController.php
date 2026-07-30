@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\OrderNotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -43,5 +44,14 @@ class OrderController extends Controller
         }
 
         return back()->with('success', __('Order updated.'));
+    }
+
+    public function paymentProof(Order $order)
+    {
+        abort_unless($order->payment_proof_path && Storage::disk('local')->exists($order->payment_proof_path), 404);
+
+        return Storage::disk('local')->response($order->payment_proof_path, $order->payment_proof_original_name, [
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 }

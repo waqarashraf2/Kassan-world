@@ -5,7 +5,7 @@
 <section class="inner-section section-shell checkout-layout">
     @if($products->isEmpty())<div class="empty-state"><strong>Your cart is empty.</strong><a href="{{ route('products.index') }}">Shop products →</a></div>
     @else
-    <form action="{{ route('checkout.store') }}" method="POST" class="site-form checkout-form">@csrf
+    <form action="{{ route('checkout.store') }}" method="POST" enctype="multipart/form-data" class="site-form checkout-form" data-payment-scope>@csrf
         <x-form-errors />
         <div class="form-grid"><label>Name<input name="customer_name" value="{{ old('customer_name', auth()->user()?->name) }}" required></label><label>Phone<input name="customer_phone" value="{{ old('customer_phone', auth()->user()?->phone) }}" required></label></div>
         <label>Email<input type="email" name="customer_email" value="{{ old('customer_email', auth()->user()?->email) }}"></label>
@@ -17,6 +17,10 @@
             <div class="form-grid"><label>Billing phone<input name="billing_phone" value="{{ old('billing_phone', auth()->user()?->phone) }}"></label><label>Billing city<input name="billing_city" value="{{ old('billing_city') }}"></label></div>
             <label>Billing address<textarea name="billing_address" rows="3">{{ old('billing_address') }}</textarea></label>
             <label class="check-label"><input type="checkbox" name="online_payment_consent" value="1" @checked(old('online_payment_consent'))> I understand card details will be entered only on the secure bank payment page after approval.</label>
+        </div>
+        <div class="bank-transfer-box" data-bank-transfer-fields @if(old('payment_method') !== 'bank_transfer') hidden @endif>
+            <div><span>Bank transfer proof</span><p>Upload a clear screenshot or PDF receipt after sending payment. This private file will be visible only to admins for verification.</p></div>
+            <label>Payment screenshot / receipt<input type="file" name="payment_proof" accept="image/jpeg,image/png,image/webp,application/pdf"></label>
         </div>
         <label>Order notes<textarea name="notes" rows="3">{{ old('notes') }}</textarea></label>
         @guest

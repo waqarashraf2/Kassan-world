@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\MagazinePurchase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MagazinePurchaseController extends Controller
 {
@@ -25,5 +26,14 @@ class MagazinePurchaseController extends Controller
         $magazinePurchase->update($data);
 
         return back()->with('success', __('Magazine purchase updated.'));
+    }
+
+    public function paymentProof(MagazinePurchase $magazinePurchase)
+    {
+        abort_unless($magazinePurchase->payment_proof_path && Storage::disk('local')->exists($magazinePurchase->payment_proof_path), 404);
+
+        return Storage::disk('local')->response($magazinePurchase->payment_proof_path, $magazinePurchase->payment_proof_original_name, [
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 }

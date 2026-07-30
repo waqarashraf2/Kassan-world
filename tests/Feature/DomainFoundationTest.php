@@ -12,6 +12,9 @@ use App\Models\WebsiteSetting;
 use App\Services\MagazineAccessService;
 use App\Services\OrderService;
 use Database\Seeders\KisanWorldContentSeeder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 test('products receive unique SEO slugs', function () {
     $category = Category::create(['name' => 'Fertilizers']);
@@ -77,6 +80,69 @@ test('paid magazines require a completed purchase', function () {
     ]);
 
     expect($access->canAccess($user, $magazine))->toBeTrue();
+});
+
+test('paid magazine bank purchase stores proof before access is unlocked', function () {
+    Storage::fake('local');
+    Mail::fake();
+    $user = User::factory()->create();
+    $magazine = Magazine::create([
+        'title' => 'Paid Kisan Issue',
+        'pdf_path' => 'magazines/paid-kisan-issue.pdf',
+        'price' => 700,
+    ]);
+
+    $this->actingAs($user)->post(route('magazines.purchase', $magazine), [
+        'payment_method' => 'bank_transfer',
+        'payment_proof' => UploadedFile::fake()->image('magazine-receipt.png'),
+    ])->assertRedirect(route('magazines.show', $magazine));
+
+    $purchase = MagazinePurchase::where('user_id', $user->id)->where('magazine_id', $magazine->id)->firstOrFail();
+
+    expect($purchase->payment_status)->toBe('pending')
+        ->and($purchase->payment_proof_path)->not->toBeNull()
+        ->and(app(MagazineAccessService::class)->canAccess($user, $magazine))->toBeFalse();
+    Storage::disk('local')->assertExists($purchase->payment_proof_path);
+
+    $purchase->update(['payment_status' => 'paid', 'paid_at' => now()]);
+
+    expect(app(MagazineAccessService::class)->canAccess($user, $magazine))->toBeTrue();
+});
+
+test('magazine online purchase stores billing metadata but rejects card data', function () {
+    Mail::fake();
+    $user = User::factory()->create(['name' => 'Magazine Buyer', 'email' => 'buyer@example.com', 'phone' => '03000000000']);
+    $magazine = Magazine::create([
+        'title' => 'Online Kisan Issue',
+        'pdf_path' => 'magazines/online-kisan-issue.pdf',
+        'price' => 900,
+    ]);
+
+    $this->actingAs($user)->post(route('magazines.purchase', $magazine), [
+        'payment_method' => 'online_payment',
+        'billing_name' => 'Magazine Buyer',
+        'billing_email' => 'buyer@example.com',
+        'billing_phone' => '03000000000',
+        'billing_address' => 'Farm Road',
+        'online_payment_consent' => '1',
+        'card_number' => '4111111111111111',
+        'cvv' => '123',
+    ])->assertSessionHasErrors(['card_number', 'cvv']);
+
+    $this->actingAs($user)->post(route('magazines.purchase', $magazine), [
+        'payment_method' => 'online_payment',
+        'billing_name' => 'Magazine Buyer',
+        'billing_email' => 'buyer@example.com',
+        'billing_phone' => '03000000000',
+        'billing_address' => 'Farm Road',
+        'online_payment_consent' => '1',
+    ])->assertRedirect(route('magazines.show', $magazine));
+
+    $purchase = MagazinePurchase::where('user_id', $user->id)->where('magazine_id', $magazine->id)->firstOrFail();
+
+    expect($purchase->payment_details['card_collection'])->toBe('redirect_gateway_only')
+        ->and($purchase->payment_details)->not->toHaveKey('card_number')
+        ->and($purchase->payment_proof_path)->toBeNull();
 });
 
 test('home loads products in batches of five', function () {

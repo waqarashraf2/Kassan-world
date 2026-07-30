@@ -21,9 +21,9 @@ class ContactController extends Controller
 
         if ($contact->email) {
             try {
-                Mail::to($contact->email)->queue(new ContactReceivedMail($contact));
+                Mail::to($contact->email)->send(new ContactReceivedMail($contact));
             } catch (\Throwable $exception) {
-                Log::error('Contact auto-reply could not be queued.', ['contact' => $contact->id, 'error' => $exception->getMessage()]);
+                Log::error('Contact auto-reply could not be sent.', ['contact' => $contact->id, 'error' => $exception->getMessage()]);
             }
         }
 

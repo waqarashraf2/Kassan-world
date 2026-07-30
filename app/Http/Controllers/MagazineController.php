@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Magazine;
+use App\Services\MagazineAccessService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,11 +18,17 @@ class MagazineController extends Controller
         ]);
     }
 
-    public function show(Magazine $magazine)
+    public function show(Magazine $magazine, MagazineAccessService $access)
     {
         abort_unless($magazine->is_active, 404);
 
-        return view('magazines.show', compact('magazine'));
+        $purchase = auth()->user()?->magazinePurchases()
+            ->where('magazine_id', $magazine->id)
+            ->latest()
+            ->first();
+        $canAccess = $access->canAccess(auth()->user(), $magazine);
+
+        return view('magazines.show', compact('magazine', 'purchase', 'canAccess'));
     }
 
     public function read(Magazine $magazine)

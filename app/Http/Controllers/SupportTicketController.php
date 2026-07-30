@@ -27,9 +27,9 @@ class SupportTicketController extends Controller
         ]);
 
         try {
-            Mail::to($ticket->email)->queue(new SupportTicketReceivedMail($ticket));
+            Mail::to($ticket->email)->send(new SupportTicketReceivedMail($ticket));
         } catch (\Throwable $exception) {
-            Log::error('Support ticket auto-reply could not be queued.', ['ticket' => $ticket->id, 'error' => $exception->getMessage()]);
+            Log::error('Support ticket auto-reply could not be sent.', ['ticket' => $ticket->id, 'error' => $exception->getMessage()]);
         }
 
         return back()->with('success', __('Support ticket :number created.', ['number' => $ticket->ticket_number]));

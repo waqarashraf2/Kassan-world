@@ -128,6 +128,7 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::resource('videos', AdminVideoController::class)->except('show');
         Route::resource('magazines', AdminMagazineController::class)->except('show');
         Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'update']);
+        Route::get('/orders/{order}/payment-proof', [AdminOrderController::class, 'paymentProof'])->name('orders.payment-proof');
         Route::resource('contacts', AdminContactController::class)->only(['index', 'show', 'destroy']);
         Route::get('/chats', [AdminChatController::class, 'index'])->name('chats.index');
         Route::get('/chats/{conversation:public_id}', [AdminChatController::class, 'show'])->name('chats.show');
@@ -141,6 +142,7 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::put('/chatbot-faqs/{chatbotFaq}', [AdminChatbotFaqController::class, 'update'])->name('chatbot-faqs.update');
         Route::get('/magazine-purchases', [AdminMagazinePurchaseController::class, 'index'])->name('magazine-purchases.index');
         Route::patch('/magazine-purchases/{magazinePurchase}', [AdminMagazinePurchaseController::class, 'update'])->name('magazine-purchases.update');
+        Route::get('/magazine-purchases/{magazinePurchase}/payment-proof', [AdminMagazinePurchaseController::class, 'paymentProof'])->name('magazine-purchases.payment-proof');
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
     });

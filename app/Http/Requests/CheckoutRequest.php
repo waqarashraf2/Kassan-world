@@ -22,6 +22,7 @@ class CheckoutRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:2000'],
             'payment_method' => ['required', 'in:cash_on_delivery,bank_transfer,online_payment'],
+            'payment_proof' => ['exclude_unless:payment_method,bank_transfer', 'required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:4096'],
             'card_number' => ['prohibited'],
             'card_no' => ['prohibited'],
             'pan' => ['prohibited'],

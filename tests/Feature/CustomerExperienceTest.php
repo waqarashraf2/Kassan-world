@@ -11,6 +11,8 @@ use App\Services\ChatbotService;
 use Database\Seeders\ChatbotFaqSeeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 test('customer can register and open the account dashboard', function () {
@@ -117,8 +119,8 @@ test('guest can create an account inside checkout without interrupting the order
     $this->assertAuthenticatedAs($user);
     expect($order->items)->toHaveCount(1)
         ->and($order->statusEvents)->toHaveCount(1);
-    Mail::assertQueued(OrderStatusMail::class);
-    Mail::assertQueued(NewOrderAdminMail::class, fn ($mail) => $mail->hasTo($admin->email));
+    Mail::assertSent(OrderStatusMail::class);
+    Mail::assertSent(NewOrderAdminMail::class, fn ($mail) => $mail->hasTo($admin->email));
 });
 
 test('FAQ seeder creates one thousand unique searchable questions', function () {
@@ -233,4 +235,43 @@ test('checkout rejects raw card fields on the merchant server', function () {
     ])->assertSessionHasErrors(['card_number', 'cvc', 'expiry_date']);
 
     expect(Order::where('customer_email', 'card@example.com')->exists())->toBeFalse();
+});
+
+test('bank transfer checkout requires and stores private payment proof', function () {
+    Storage::fake('local');
+    Mail::fake();
+    $category = Category::create(['name' => 'Bank Transfer Products']);
+    $product = Product::create([
+        'category_id' => $category->id,
+        'name' => 'Bank Transfer Fertilizer',
+        'price' => 3200,
+        'stock_quantity' => 6,
+    ]);
+
+    $this->withSession(['cart' => [$product->id => 1]])->post(route('checkout.store'), [
+        'customer_name' => 'Bank Farmer',
+        'customer_email' => 'bank@example.com',
+        'customer_phone' => '03001112222',
+        'shipping_address' => 'Farm Road',
+        'city' => 'Lahore',
+        'payment_method' => 'bank_transfer',
+        'items' => [['product_id' => $product->id, 'quantity' => 1]],
+    ])->assertSessionHasErrors(['payment_proof']);
+
+    $response = $this->withSession(['cart' => [$product->id => 1]])->post(route('checkout.store'), [
+        'customer_name' => 'Bank Farmer',
+        'customer_email' => 'bank@example.com',
+        'customer_phone' => '03001112222',
+        'shipping_address' => 'Farm Road',
+        'city' => 'Lahore',
+        'payment_method' => 'bank_transfer',
+        'payment_proof' => UploadedFile::fake()->image('receipt.jpg'),
+        'items' => [['product_id' => $product->id, 'quantity' => 1]],
+    ]);
+
+    $order = Order::where('customer_email', 'bank@example.com')->firstOrFail();
+
+    $response->assertRedirect(route('checkout.success', $order->order_number));
+    expect($order->payment_proof_path)->not->toBeNull();
+    Storage::disk('local')->assertExists($order->payment_proof_path);
 });

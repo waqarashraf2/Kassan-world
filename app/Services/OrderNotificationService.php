@@ -28,10 +28,10 @@ class OrderNotificationService
                 ->unique();
 
             foreach ($emails as $email) {
-                Mail::to($email)->queue(new NewOrderAdminMail($order));
+                Mail::to($email)->send(new NewOrderAdminMail($order));
             }
         } catch (\Throwable $exception) {
-            Log::error('Admin order email could not be queued.', ['order' => $order->id, 'error' => $exception->getMessage()]);
+            Log::error('Admin order email could not be sent.', ['order' => $order->id, 'error' => $exception->getMessage()]);
         }
     }
 
@@ -55,10 +55,10 @@ class OrderNotificationService
             $order->user?->notify(new OrderActivityNotification($order, $message));
 
             if ($order->customer_email && ($order->user?->email_notifications ?? true)) {
-                Mail::to($order->customer_email)->queue(new OrderStatusMail($order, $headline, $message));
+                Mail::to($order->customer_email)->send(new OrderStatusMail($order, $headline, $message));
             }
         } catch (\Throwable $exception) {
-            Log::error('Customer order notification could not be queued.', ['order' => $order->id, 'error' => $exception->getMessage()]);
+            Log::error('Customer order notification could not be sent.', ['order' => $order->id, 'error' => $exception->getMessage()]);
         }
     }
 }
