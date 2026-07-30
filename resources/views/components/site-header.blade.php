@@ -1,7 +1,7 @@
 <header class="site-header" data-site-header>
     <div class="header-shell">
         <a href="{{ route('home') }}" class="brand" aria-label="KISANWORLD home">
-            <span class="brand-mark"><img src="{{ asset('logos and images/Kisaan world.jpeg') }}" alt="KISANWORLD کسان ورلڈ logo" width="679" height="504"></span>
+            <span class="brand-mark"><img src="{{ asset('logos and images/Kisaan world-transparent.png') }}" alt="KISANWORLD کسان ورلڈ logo" width="679" height="504"></span>
             <span class="brand-copy"><strong>KISAN<span>WORLD</span></strong><small lang="ur" dir="rtl">کسان ورلڈ</small></span>
         </a>
         <nav class="desktop-nav" aria-label="Main navigation">

@@ -1,7 +1,7 @@
 @props(['product'])
 @php
     $images = $product->images->map(fn ($image) => $image->url)->values();
-    $fallback = asset('logos and images/Kisaan world.jpeg');
+    $fallback = asset('logos and images/Kisaan world-transparent.png');
     $primaryImage = $images->first() ?? $fallback;
     $discount = $product->discount_price && (float) $product->price > 0
         ? (int) round((1 - ((float) $product->discount_price / (float) $product->price)) * 100)

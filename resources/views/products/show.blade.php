@@ -2,7 +2,7 @@
 @section('title', ($product->meta_title ?: $product->name).' | KISANWORLD')
 @section('meta_description', $product->meta_description ?: ($product->short_description ?: 'Buy '.$product->name.' from KISANWORLD.'))
 @section('canonical', $product->canonical_url ?: route('products.show', $product))
-@section('og_image', $product->og_image_url ?: asset('logos and images/Kisaan world.jpeg'))
+@section('og_image', $product->og_image_url ?: asset('logos and images/Kisaan world-transparent.png'))
 @push('head')
 <script type="application/ld+json">{!! json_encode(['@'.'context'=>'https://schema.org','@type'=>'Product','name'=>$product->name,'description'=>$product->short_description ?: strip_tags((string) $product->description),'image'=>$product->images->map(fn($image)=>$image->url)->values(),'sku'=>$product->sku,'offers'=>['@type'=>'Offer','priceCurrency'=>'PKR','price'=>(float)$product->sale_price,'availability'=>$product->in_stock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock','url'=>route('products.show',$product)]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 @endpush
@@ -14,7 +14,7 @@
         'alt' => $image->alt_text ?: $product->name,
     ])->values();
     if ($galleryImages->isEmpty()) {
-        $galleryImages = collect([['src' => asset('logos and images/Kisaan world.jpeg'), 'alt' => $product->name]]);
+        $galleryImages = collect([['src' => asset('logos and images/Kisaan world-transparent.png'), 'alt' => $product->name]]);
     }
 @endphp
 <section class="inner-section section-shell product-detail">

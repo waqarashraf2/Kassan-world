@@ -6,7 +6,7 @@
 
 @push('head')
 <script type="application/ld+json">
-{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Organization', 'name' => 'KISANWORLD', 'alternateName' => 'کسان ورلڈ', 'url' => route('home'), 'logo' => asset('logos and images/Kisaan world.jpeg'), 'sameAs' => array_values(array_filter([$siteSettings['whatsapp_url'] ?? null, $siteSettings['youtube_url'] ?? null, $siteSettings['facebook_url'] ?? null, $siteSettings['instagram_url'] ?? null])), 'contactPoint' => ['@type' => 'ContactPoint', 'telephone' => '+92'.ltrim($siteSettings['site_phone'] ?? '03226780242', '0'), 'contactType' => 'customer service', 'areaServed' => 'PK']], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Organization', 'name' => 'KISANWORLD', 'alternateName' => 'کسان ورلڈ', 'url' => route('home'), 'logo' => asset('logos and images/Kisaan world-transparent.png'), 'sameAs' => array_values(array_filter([$siteSettings['whatsapp_url'] ?? null, $siteSettings['youtube_url'] ?? null, $siteSettings['facebook_url'] ?? null, $siteSettings['instagram_url'] ?? null])), 'contactPoint' => ['@type' => 'ContactPoint', 'telephone' => '+92'.ltrim($siteSettings['site_phone'] ?? '03226780242', '0'), 'contactType' => 'customer service', 'areaServed' => 'PK']], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
 @endpush
 

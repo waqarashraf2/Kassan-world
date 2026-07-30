@@ -9,7 +9,7 @@
             @foreach($products as $product)
                 @php
                     $cartImages = $product->images->map(fn ($image) => $image->url)->values();
-                    $cartFallback = asset('logos and images/Kisaan world.jpeg');
+                    $cartFallback = asset('logos and images/Kisaan world-transparent.png');
                 @endphp
                 <article class="cart-line" data-rotating-media data-images='@json($cartImages->isNotEmpty() ? $cartImages : [$cartFallback])' data-interval="10000">
                     <a href="{{ route('products.show',$product) }}" class="cart-line-media"><img src="{{ $cartImages->first() ?? $cartFallback }}" alt="{{ $product->name }}" data-rotating-image></a>
