@@ -33,7 +33,7 @@
             <a href="{{ route('products.index') }}" class="service-row"><span class="service-icon">01</span><span><strong>Crop Nutrition</strong><small>Fertilizers & growth solutions</small></span><b>↗</b></a>
             <a href="{{ route('products.index') }}" class="service-row"><span class="service-icon">02</span><span><strong>Seeds & Protection</strong><small>Trusted inputs for healthy crops</small></span><b>↗</b></a>
             <a href="{{ route('blogs.urdu.index') }}" class="service-row"><span class="service-icon">03</span><span><strong>Farmer Knowledge</strong><small>Field-ready guides in Urdu</small></span><b>↗</b></a>
-            <a href="{{ route('magazines.index') }}" class="service-row"><span class="service-icon">04</span><span><strong>Kisan Magazine</strong><small>Seasonal insight, online & offline</small></span><b>↗</b></a>
+            <a href="{{ route('magazines.index') }}" class="service-row"><span class="service-icon">04</span><span><strong>Kisan World Magazine</strong><small>Seasonal insight, online & offline</small></span><b>↗</b></a>
         </aside>
     </div>
     <a href="#featured-products" class="scroll-cue" aria-label="Scroll to products"><span>Scroll to explore</span><i></i></a>
