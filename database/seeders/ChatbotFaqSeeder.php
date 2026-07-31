@@ -3,12 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\ChatbotFaq;
+use App\Models\WebsiteSetting;
 use Illuminate\Database\Seeder;
 
 class ChatbotFaqSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->seedGeminiSettings();
+
         $categories = [
             'Products' => [
                 ['choosing the right farm product', 'comparing two agricultural products', 'reading a product description', 'finding product specifications', 'understanding product benefits', 'selecting a product for my crop', 'asking about product usage', 'finding a product category', 'checking product authenticity', 'getting product recommendations'],
@@ -123,6 +126,31 @@ class ChatbotFaqSeeder extends Seeder
                 $chunk,
                 ['question'],
                 ['category', 'answer', 'keywords', 'priority', 'is_active', 'updated_at']
+            );
+        }
+    }
+
+    private function seedGeminiSettings(): void
+    {
+        $settings = [
+            ['key' => 'gemini_auto_reply_enabled', 'value' => '0', 'type' => 'number', 'group' => 'chatbot', 'is_public' => false],
+            ['key' => 'gemini_api_key', 'value' => '', 'type' => 'text', 'group' => 'chatbot', 'is_public' => false],
+            ['key' => 'gemini_model', 'value' => 'gemini-2.5-flash', 'type' => 'text', 'group' => 'chatbot', 'is_public' => false],
+            ['key' => 'gemini_temperature', 'value' => '0.3', 'type' => 'number', 'group' => 'chatbot', 'is_public' => false],
+            ['key' => 'gemini_max_output_tokens', 'value' => '220', 'type' => 'number', 'group' => 'chatbot', 'is_public' => false],
+            [
+                'key' => 'gemini_system_prompt',
+                'value' => 'You are KISANWORLD Support. Reply briefly and helpfully to customers about products, prices, delivery, payments, returns, accounts, orders, magazines and support. Do not ask for card number, CVV, PIN, OTP or passwords. For pesticide, fertilizer dosage, medical, legal or financial decisions, give general safety guidance and ask the customer to contact KISANWORLD or a qualified professional. If you do not know, say so and ask for city, product name, order number or more details.',
+                'type' => 'textarea',
+                'group' => 'chatbot',
+                'is_public' => false,
+            ],
+        ];
+
+        foreach ($settings as $setting) {
+            WebsiteSetting::updateOrCreate(
+                ['key' => $setting['key']],
+                $setting + ['created_at' => now(), 'updated_at' => now()]
             );
         }
     }

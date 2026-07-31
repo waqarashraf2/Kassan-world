@@ -7,9 +7,12 @@ use App\Models\ChatbotFaq;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\WebsiteSetting;
 use App\Services\ChatbotService;
 use Database\Seeders\ChatbotFaqSeeder;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
@@ -139,6 +142,14 @@ test('FAQ seeder creates one thousand unique searchable questions', function () 
         ->assertJsonStructure(['conversation_id', 'reply' => ['id', 'message']]);
 });
 
+test('database seeder only loads chatbot FAQs and Gemini settings', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    expect(ChatbotFaq::count())->toBe(1000)
+        ->and(WebsiteSetting::where('key', 'gemini_auto_reply_enabled')->exists())->toBeTrue()
+        ->and(Product::count())->toBe(0);
+});
+
 test('customers cannot open another customers order', function () {
     $owner = User::factory()->create();
     $other = User::factory()->create();
@@ -171,6 +182,29 @@ test('chatbot can answer from live product data', function () {
     expect($answer['matched'])->toBeTrue()
         ->and($answer['answer'])->toContain('Rs. 3,200')
         ->and($answer['answer'])->toContain('in stock');
+});
+
+test('chatbot can use Gemini fallback when enabled', function () {
+    Http::fake([
+        'generativelanguage.googleapis.com/*' => Http::response([
+            'candidates' => [[
+                'content' => [
+                    'parts' => [['text' => 'Please share your city and crop so KISANWORLD can guide you properly.']],
+                ],
+            ]],
+        ]),
+    ]);
+
+    WebsiteSetting::updateOrCreate(['key' => 'gemini_auto_reply_enabled'], ['value' => '1', 'type' => 'number', 'group' => 'chatbot', 'is_public' => false]);
+    WebsiteSetting::updateOrCreate(['key' => 'gemini_api_key'], ['value' => 'test-key', 'type' => 'text', 'group' => 'chatbot', 'is_public' => false]);
+    WebsiteSetting::updateOrCreate(['key' => 'gemini_model'], ['value' => 'gemini-2.5-flash', 'type' => 'text', 'group' => 'chatbot', 'is_public' => false]);
+
+    $answer = app(ChatbotService::class)->answer('Tell me something specific about my unusual farm issue');
+
+    expect($answer['matched'])->toBeTrue()
+        ->and($answer['answer'])->toContain('KISANWORLD');
+
+    Http::assertSent(fn ($request) => str_contains($request->url(), 'models/gemini-2.5-flash:generateContent'));
 });
 
 test('checkout stores safe online payment billing details without card data', function () {
