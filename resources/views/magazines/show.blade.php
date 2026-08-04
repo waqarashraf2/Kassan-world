@@ -24,7 +24,7 @@
             <form action="{{ route('magazines.purchase',$magazine) }}" method="POST" enctype="multipart/form-data" class="magazine-purchase-form" data-payment-scope>
                 @csrf
                 <x-form-errors />
-                <label>Payment method<select name="payment_method" data-payment-method><option value="bank_transfer" @selected(old('payment_method') === 'bank_transfer')>Bank transfer</option><option value="online_payment" @selected(old('payment_method') === 'online_payment')>Online payment - Bank Alfalah</option></select></label>
+                <label class="payment-method-field"><span>Payment method</span><select name="payment_method" data-payment-method><option value="bank_transfer" @selected(old('payment_method') === 'bank_transfer')>Bank transfer</option><option value="online_payment" @selected(old('payment_method') === 'online_payment')>Online payment - Bank Alfalah</option></select></label>
                 <div class="bank-transfer-box" data-bank-transfer-fields @if(old('payment_method') === 'online_payment') hidden @endif>
                     <x-payment-account-details intro="Copy any account number below, send payment for this magazine, then upload the payment screenshot or receipt." />
                     <label>Payment screenshot / receipt<input type="file" name="payment_proof" accept="image/jpeg,image/png,image/webp,application/pdf" data-payment-proof-input><small data-payment-proof-name>JPG, PNG, WEBP or PDF up to 4MB.</small></label>
