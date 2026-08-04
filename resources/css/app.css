@@ -360,7 +360,7 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
 .online-payment-box > div:first-child span, .bank-transfer-box > div:first-child span { color: var(--orange-500); font-size: .72rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
 .online-payment-box > div:first-child p, .bank-transfer-box > div:first-child p, .payment-safe-note { margin: 6px 0 0; color: #69786f; font-size: .72rem; line-height: 1.65; }
 .payment-account-list { display: grid; gap: 8px; }
-.payment-account-card { padding: 10px 12px; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; border: 1px solid #dce8df; border-radius: 10px; background: white; }
+.payment-account-card { padding: 10px 12px; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; gap: 10px; border: 1px solid #dce8df; border-radius: 10px; background: white; }
 .payment-account-badge { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 9px; background: var(--green-800); color: white; font-size: .62rem; font-weight: 900; }
 .payment-account-info { min-width: 0; display: grid; grid-template-columns: minmax(145px, .7fr) minmax(0, 1.3fr); align-items: center; gap: 7px 10px; }
 .payment-account-info strong { color: var(--green-900); font-size: .78rem; }
@@ -669,11 +669,16 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
     .magazine-detail > div, .product-info, .policy-content { padding: 20px; }
     .buy-form { display: grid; grid-template-columns: 1fr; }
     .buy-form input { width: 100%; }
-    .payment-account-card { grid-template-columns: 1fr; }
-    .payment-account-info { grid-template-columns: 1fr; }
-    .copy-field { grid-column: auto; }
-    .copy-field { grid-template-columns: 1fr; }
-    .copy-field button { width: 100%; }
+    .bank-transfer-box, .online-payment-box { padding: 12px; gap: 10px; }
+    .payment-account-list { gap: 7px; }
+    .payment-account-card { padding: 9px; grid-template-columns: 30px minmax(0, 1fr); gap: 8px; }
+    .payment-account-badge { width: 30px; height: 30px; border-radius: 8px; font-size: .56rem; }
+    .payment-account-info { grid-template-columns: 1fr; gap: 5px; }
+    .payment-account-info strong { font-size: .72rem; }
+    .payment-account-info span { font-size: .6rem; }
+    .copy-field { grid-column: auto; grid-template-columns: minmax(0, 1fr) 58px; gap: 6px; }
+    .copy-field code { padding: 7px 8px; font-size: .62rem; }
+    .copy-field button { width: auto; min-height: 30px; padding: 0 8px; font-size: .58rem; }
     .customer-heading { align-items: start; flex-direction: column; }
     .customer-dashboard-grid, .address-grid { grid-template-columns: 1fr; }
     .customer-order-list > a { grid-template-columns: 1fr auto; }
