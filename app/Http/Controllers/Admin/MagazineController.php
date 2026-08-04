@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MagazineRequest;
 use App\Models\Magazine;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\UploadedFile;
 
 class MagazineController extends Controller
@@ -51,7 +52,7 @@ class MagazineController extends Controller
         unset($data['cover_upload'], $data['pdf_upload']);
 
         if ($request->file('cover_upload') instanceof UploadedFile) {
-            $data['cover_image'] = 'storage/'.$request->file('cover_upload')->store('uploads/magazines', 'public');
+            $data['cover_image'] = $this->storeCoverUpload($request->file('cover_upload'));
         }
 
         if ($request->file('pdf_upload') instanceof UploadedFile) {
@@ -59,5 +60,22 @@ class MagazineController extends Controller
         }
 
         return $data;
+    }
+
+    private function storeCoverUpload(UploadedFile $file): string
+    {
+        $directory = $this->projectRoot().DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.'magazines';
+
+        File::ensureDirectoryExists($directory, 0755, true);
+
+        $filename = $file->hashName();
+        $file->move($directory, $filename);
+
+        return 'storage/uploads/magazines/'.$filename;
+    }
+
+    private function projectRoot(): string
+    {
+        return dirname(__DIR__, 4);
     }
 }

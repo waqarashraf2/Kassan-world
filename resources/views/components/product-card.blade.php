@@ -37,6 +37,9 @@
                 <button type="submit" class="add-cart" @disabled(! $product->in_stock)><span class="button-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 10h10l2-7H7M10 19a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg></span><span data-button-label>Add to Cart</span></button>
             </form>
             <a href="{{ route('products.show', $product) }}" class="view-product" aria-label="View {{ $product->name }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></a>
+            <button type="button" class="share-product" data-share-product data-share-title="{{ $product->name }}" data-share-text="View {{ $product->name }} on KISANWORLD" data-share-url="{{ route('products.show', $product) }}" aria-label="Share {{ $product->name }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6 15.4 7.4M8.6 13.4l6.8 3.2"/></svg>
+            </button>
         </div>
     </div>
 </article>

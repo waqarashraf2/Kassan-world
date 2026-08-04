@@ -43,6 +43,10 @@ Route::get('/media/{path}', PublicMediaController::class)
     ->name('media.show');
 Route::get('/home/products', [HomeController::class, 'products'])->name('home.products');
 Route::view('/about-us', 'about')->name('about');
+Route::view('/privacy-policy', 'policies.privacy')->name('policies.privacy');
+Route::view('/terms-and-conditions', 'policies.terms')->name('policies.terms');
+Route::view('/shipping-service-policy', 'policies.shipping')->name('policies.shipping');
+Route::view('/refund-return-policy', 'policies.refund')->name('policies.refund');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');

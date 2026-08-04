@@ -51,6 +51,90 @@ document.querySelectorAll('[data-payment-scope]').forEach((scope) => {
     updatePaymentFields();
 });
 
+document.addEventListener('click', async (event) => {
+    const copyButton = event.target.closest('[data-copy-value]');
+    if (!copyButton) return;
+
+    const originalText = copyButton.textContent;
+    const value = copyButton.dataset.copyValue;
+
+    try {
+        if (navigator.clipboard) {
+            await navigator.clipboard.writeText(value);
+        } else {
+            const temporaryInput = document.createElement('textarea');
+            temporaryInput.value = value;
+            temporaryInput.setAttribute('readonly', '');
+            temporaryInput.style.position = 'fixed';
+            temporaryInput.style.opacity = '0';
+            document.body.append(temporaryInput);
+            temporaryInput.select();
+            document.execCommand('copy');
+            temporaryInput.remove();
+        }
+        copyButton.textContent = 'Copied';
+        copyButton.classList.add('is-copied');
+    } catch (error) {
+        copyButton.textContent = 'Select text';
+    }
+
+    window.setTimeout(() => {
+        copyButton.textContent = originalText;
+        copyButton.classList.remove('is-copied');
+    }, 1600);
+});
+
+document.querySelectorAll('[data-payment-proof-input]').forEach((input) => {
+    input.addEventListener('change', () => {
+        const fileName = input.closest('label')?.querySelector('[data-payment-proof-name]');
+        if (!fileName) return;
+
+        fileName.textContent = input.files?.[0]?.name || 'JPG, PNG, WEBP or PDF up to 4MB.';
+    });
+});
+
+document.addEventListener('click', async (event) => {
+    const shareButton = event.target.closest('[data-share-product]');
+    if (!shareButton) return;
+
+    const originalText = shareButton.querySelector('span')?.textContent || shareButton.getAttribute('aria-label') || 'Share';
+    const shareData = {
+        title: shareButton.dataset.shareTitle || document.title,
+        text: shareButton.dataset.shareText || '',
+        url: shareButton.dataset.shareUrl || window.location.href,
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(shareData.url);
+        } else {
+            const temporaryInput = document.createElement('textarea');
+            temporaryInput.value = shareData.url;
+            temporaryInput.setAttribute('readonly', '');
+            temporaryInput.style.position = 'fixed';
+            temporaryInput.style.opacity = '0';
+            document.body.append(temporaryInput);
+            temporaryInput.select();
+            document.execCommand('copy');
+            temporaryInput.remove();
+        }
+
+        shareButton.classList.add('is-copied');
+        const label = shareButton.querySelector('span');
+        if (label) label.textContent = 'Copied';
+    } catch (error) {
+        if (error.name === 'AbortError') return;
+    }
+
+    window.setTimeout(() => {
+        shareButton.classList.remove('is-copied');
+        const label = shareButton.querySelector('span');
+        if (label) label.textContent = originalText;
+    }, 1600);
+});
+
 const siteToast = document.querySelector('.site-toast');
 if (siteToast) {
     window.setTimeout(() => siteToast.classList.add('is-hidden'), 4500);

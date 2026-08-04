@@ -5,7 +5,7 @@
 @section('content')
 <x-page-hero eyebrow="{{ $magazine->is_free ? 'Free magazine' : 'Premium magazine' }}" title="{{ $magazine->title }}" />
 <section class="inner-section section-shell magazine-detail">
-    <img src="{{ $magazine->cover_image ? asset(ltrim($magazine->cover_image,'/')) : asset('logos and images/Kisaan world-transparent.png') }}" alt="{{ $magazine->cover_image_alt ?: $magazine->title }}">
+    <img src="{{ $magazine->cover_image_url ?: asset('logos and images/Kisaan world-transparent.png') }}" alt="{{ $magazine->cover_image_alt ?: $magazine->title }}">
     <div>
         <div class="detail-price"><strong>{{ $magazine->is_free ? 'Free' : 'Rs. '.number_format((float)$magazine->price) }}</strong></div>
         <p>{{ $magazine->description }}</p>
@@ -26,8 +26,8 @@
                 <x-form-errors />
                 <label>Payment method<select name="payment_method" data-payment-method><option value="bank_transfer" @selected(old('payment_method') === 'bank_transfer')>Bank transfer</option><option value="online_payment" @selected(old('payment_method') === 'online_payment')>Online payment - Bank Alfalah</option></select></label>
                 <div class="bank-transfer-box" data-bank-transfer-fields @if(old('payment_method') === 'online_payment') hidden @endif>
-                    <div><span>Bank transfer proof</span><p>Upload the screenshot or PDF receipt after sending payment. Admin will verify it before PDF access is unlocked.</p></div>
-                    <label>Payment screenshot / receipt<input type="file" name="payment_proof" accept="image/jpeg,image/png,image/webp,application/pdf"></label>
+                    <x-payment-account-details intro="Copy any account number below, send payment for this magazine, then upload the payment screenshot or receipt." />
+                    <label>Payment screenshot / receipt<input type="file" name="payment_proof" accept="image/jpeg,image/png,image/webp,application/pdf" data-payment-proof-input><small data-payment-proof-name>JPG, PNG, WEBP or PDF up to 4MB.</small></label>
                     <label>Reference number <input name="payment_reference" value="{{ old('payment_reference') }}" placeholder="Optional transaction ID"></label>
                 </div>
                 <div class="online-payment-box" data-online-payment-fields @if(old('payment_method') !== 'online_payment') hidden @endif>

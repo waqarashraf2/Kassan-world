@@ -6,10 +6,12 @@
         </div>
         <div><h2>Explore</h2><a href="{{ route('products.index') }}">Products</a><a href="{{ route('blogs.urdu.index') }}">Urdu Blogs</a><a href="{{ route('videos.index') }}">Videos</a></div>
         <div><h2>Support</h2><a href="{{ route('about') }}">About Us</a><a href="{{ route('contact.create') }}">Contact Us</a><a href="{{ route('magazines.index') }}">Magazine</a><a href="{{ route('cart.index') }}">Your Cart</a></div>
+        <div><h2>Policies</h2><a href="{{ route('policies.privacy') }}">Privacy Policy</a><a href="{{ route('policies.terms') }}">Terms & Conditions</a><a href="{{ route('policies.shipping') }}">Shipping / Service Policy</a><a href="{{ route('policies.refund') }}">Refund / Return Policy</a></div>
         <div>
             <h2>Stay Connected</h2>
             <a href="tel:+92{{ ltrim($siteSettings['site_phone'] ?? '03226780242', '0') }}">{{ $siteSettings['site_phone'] ?? '03226780242' }}</a>
             <a href="mailto:{{ $siteSettings['site_email'] ?? 'kisanworld.magazine@gmail.com' }}">{{ $siteSettings['site_email'] ?? 'kisanworld.magazine@gmail.com' }}</a>
+            <address>{{ $siteSettings['site_address'] ?? 'KISANWORLD Marketing, Lahore, Pakistan' }}</address>
             <div class="social-links" aria-label="KISANWORLD social media">
                 @if(!empty($siteSettings['whatsapp_url']))
                     <a href="{{ $siteSettings['whatsapp_url'] }}" target="_blank" rel="noopener noreferrer" aria-label="KISANWORLD on WhatsApp" title="WhatsApp">

@@ -22,6 +22,10 @@ class SeoController extends Controller
                 ['loc' => route('magazines.index'), 'lastmod' => now()],
                 ['loc' => route('about'), 'lastmod' => now()],
                 ['loc' => route('contact.create'), 'lastmod' => now()],
+                ['loc' => route('policies.privacy'), 'lastmod' => now()],
+                ['loc' => route('policies.terms'), 'lastmod' => now()],
+                ['loc' => route('policies.shipping'), 'lastmod' => now()],
+                ['loc' => route('policies.refund'), 'lastmod' => now()],
             ]);
 
             Product::active()->each(fn ($item) => $urls->push(['loc' => route('products.show', $item), 'lastmod' => $item->updated_at]));

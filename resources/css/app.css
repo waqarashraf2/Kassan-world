@@ -191,7 +191,7 @@ svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: 
 .price-row { min-height: 28px; margin-top: 13px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
 .price-row strong { color: var(--green-800); font-size: 1rem; }
 .price-row del { color: #9b9b92; font-size: .72rem; }
-.product-actions { margin-top: 15px; display: grid; grid-template-columns: 1fr 42px; gap: 8px; }
+.product-actions { margin-top: 15px; display: grid; grid-template-columns: 1fr 42px 42px; gap: 8px; }
 .product-actions form { min-width: 0; }
 .add-cart { width: 100%; height: 42px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 10px; background: var(--green-800); color: white; cursor: pointer; font-size: .72rem; font-weight: 850; transition: background .2s ease, transform .2s ease; }
 .add-cart:hover { background: var(--orange-500); }
@@ -202,9 +202,9 @@ button[data-loading="true"] .button-icon { border: 2px solid rgba(255,255,255,.3
 button[data-loading="true"] .button-icon svg { opacity: 0; }
 .add-cart.is-success, .button.is-success { background: #159447; }
 .add-cart.is-error, .button.is-error { background: #b43b2a; }
-.view-product { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; color: var(--green-800); }
-.view-product:hover { border-color: var(--orange-500); color: var(--orange-500); }
-.view-product svg { width: 18px; }
+.view-product, .share-product { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--green-800); cursor: pointer; }
+.view-product:hover, .share-product:hover, .share-product.is-copied { border-color: var(--orange-500); color: var(--orange-500); }
+.view-product svg, .share-product svg { width: 18px; }
 .load-sentinel, .product-end { min-height: 90px; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--muted); font-size: .8rem; }
 .loader-ring { width: 25px; height: 25px; border: 2px solid rgba(13,107,59,.15); border-top-color: var(--green-700); border-radius: 50%; animation: spin .8s linear infinite; }
 .load-sentinel:not(.is-loading) .loader-ring { animation-play-state: paused; opacity: .35; }
@@ -232,10 +232,10 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
 .button-orange { background: var(--orange-500); color: white; }
 .cta-phone { color: rgba(255,255,255,.75); font-size: .8rem; }
 .site-footer { padding: 75px max(24px, calc((100% - 1280px) / 2)) 25px; background: #062a1d; color: white; }
-.footer-grid { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 55px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 34px; }
 .footer-grid > div { display: grid; align-content: start; gap: 11px; }
 .footer-brand { font-size: 1.4rem; font-weight: 900; }
-.footer-grid p, .footer-grid a { margin: 0; color: rgba(255,255,255,.6); font-size: .82rem; line-height: 1.7; }
+.footer-grid p, .footer-grid a, .footer-grid address { margin: 0; color: rgba(255,255,255,.6); font-size: .82rem; line-height: 1.7; font-style: normal; }
 .footer-grid a:hover { color: var(--orange-400); }
 .footer-grid h2 { margin: 0 0 8px; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em; }
 .footer-bottom { margin-top: 60px; padding-top: 20px; display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.4); font-size: .7rem; }
@@ -285,6 +285,8 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
 .buy-form { margin: 28px 0; display: flex; align-items: end; flex-wrap: wrap; gap: 10px; }
 .buy-form label { display: grid; gap: 6px; color: var(--muted); font-size: .72rem; }
 .buy-form input { width: 82px; height: 50px; padding: 0 12px; }
+.share-detail-button svg { width: 18px; }
+.share-detail-button.is-copied { border-color: var(--orange-500); color: var(--orange-500); }
 .detail-wishlist button { padding: 0; border: 0; background: transparent; color: var(--green-700); cursor: pointer; font-size: .76rem; font-weight: 850; text-decoration: underline; }
 .outline-button, .outline-dark { border: 1px solid var(--green-700); color: var(--green-800); }
 .product-description-section { padding-bottom: 95px; }
@@ -321,6 +323,13 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
 .contact-grid h2 { margin: 0 0 15px; font-family: Georgia, serif; font-size: 3rem; }
 .contact-grid > div > p { color: var(--muted); line-height: 1.7; }
 .contact-grid > div > a { margin-top: 12px; display: block; color: var(--green-700); font-weight: 800; }
+.contact-grid address { margin-top: 12px; color: var(--muted); font-style: normal; line-height: 1.7; }
+.policy-page { padding-block: 70px 105px; }
+.policy-updated { margin: 0 0 18px; color: var(--green-700); font-size: .78rem; font-weight: 850; }
+.policy-content { padding: 34px; display: grid; gap: 18px; border: 1px solid var(--line); border-radius: 18px; background: white; box-shadow: 0 12px 38px rgba(4,45,28,.055); }
+.policy-content h2 { margin: 12px 0 0; color: var(--green-900); font-family: Georgia, serif; font-size: 1.45rem; line-height: 1.2; }
+.policy-content h2:first-child { margin-top: 0; }
+.policy-content p { margin: 0; color: #53645b; line-height: 1.85; }
 .site-form { padding: 30px; display: grid; gap: 18px; border: 1px solid var(--line); border-radius: 20px; background: white; box-shadow: var(--shadow); }
 .site-form label { display: grid; gap: 7px; color: #3e5146; font-size: .78rem; font-weight: 750; }
 .site-form input, .site-form textarea, .site-form select { padding: 13px 14px; }
@@ -348,6 +357,17 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
 .online-payment-box[hidden], .bank-transfer-box[hidden] { display: none; }
 .online-payment-box > div:first-child span, .bank-transfer-box > div:first-child span { color: var(--orange-500); font-size: .72rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
 .online-payment-box > div:first-child p, .bank-transfer-box > div:first-child p, .payment-safe-note { margin: 6px 0 0; color: #69786f; font-size: .72rem; line-height: 1.65; }
+.payment-account-list { display: grid; gap: 10px; }
+.payment-account-card { padding: 13px; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; border: 1px solid #dce8df; border-radius: 12px; background: white; }
+.payment-account-badge { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 11px; background: var(--green-800); color: white; font-size: .7rem; font-weight: 900; }
+.payment-account-info { min-width: 0; display: grid; gap: 7px; }
+.payment-account-info strong { color: var(--green-900); font-size: .84rem; }
+.payment-account-info span { color: #53645b; font-size: .72rem; font-weight: 750; }
+.copy-field { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.copy-field code { min-width: 0; padding: 9px 10px; overflow-wrap: anywhere; border: 1px solid #e2ebe5; border-radius: 8px; background: #f8fbf8; color: var(--green-950); font-family: Consolas, "Courier New", monospace; font-size: .77rem; font-weight: 800; }
+.copy-field button { min-height: 36px; padding: 0 11px; border: 0; border-radius: 8px; background: var(--orange-500); color: white; cursor: pointer; font-size: .66rem; font-weight: 850; white-space: nowrap; }
+.copy-field button.is-copied { background: var(--green-700); }
+.site-form label small { color: #7d8a83; font-size: .68rem; font-weight: 600; }
 .magazine-purchase-form { margin-top: 24px; display: grid; gap: 15px; }
 .payment-status-box { margin-top: 22px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #f6faf7; }
 .payment-status-box strong { color: var(--green-900); }
@@ -631,6 +651,9 @@ button[data-loading="true"] .button-icon svg { opacity: 0; }
     .cart-line-media { width: 72px; height: 72px; }
     .cart-line form { grid-column: 2; }
     .form-grid { grid-template-columns: 1fr; }
+    .payment-account-card { grid-template-columns: 1fr; }
+    .copy-field { grid-template-columns: 1fr; }
+    .copy-field button { width: 100%; }
     .customer-heading { align-items: start; flex-direction: column; }
     .customer-dashboard-grid, .address-grid { grid-template-columns: 1fr; }
     .customer-order-list > a { grid-template-columns: 1fr auto; }

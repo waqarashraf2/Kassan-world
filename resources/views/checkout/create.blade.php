@@ -19,8 +19,8 @@
             <label class="check-label"><input type="checkbox" name="online_payment_consent" value="1" @checked(old('online_payment_consent'))> I understand card details will be entered only on the secure bank payment page after approval.</label>
         </div>
         <div class="bank-transfer-box" data-bank-transfer-fields @if(old('payment_method') !== 'bank_transfer') hidden @endif>
-            <div><span>Bank transfer proof</span><p>Upload a clear screenshot or PDF receipt after sending payment. This private file will be visible only to admins for verification.</p></div>
-            <label>Payment screenshot / receipt<input type="file" name="payment_proof" accept="image/jpeg,image/png,image/webp,application/pdf"></label>
+            <x-payment-account-details intro="Copy any account number below, send payment, then upload the payment screenshot or receipt with your order." />
+            <label>Payment screenshot / receipt<input type="file" name="payment_proof" accept="image/jpeg,image/png,image/webp,application/pdf" data-payment-proof-input><small data-payment-proof-name>JPG, PNG, WEBP or PDF up to 4MB.</small></label>
         </div>
         <label>Order notes<textarea name="notes" rows="3">{{ old('notes') }}</textarea></label>
         @guest
