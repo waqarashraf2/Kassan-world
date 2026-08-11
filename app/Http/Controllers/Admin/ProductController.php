@@ -22,7 +22,10 @@ class ProductController extends Controller
 
     public function create()
     {
-        return view('admin.products.create', ['categories' => Category::where('is_active', true)->get()]);
+        return view('admin.products.create', [
+            'categories' => Category::where('is_active', true)->get(),
+            'specialOffers' => SpecialOffer::where('is_active', true)->get(),
+        ]);
     }
 
     public function store(ProductRequest $request)
@@ -53,6 +56,7 @@ class ProductController extends Controller
         return view('admin.products.edit', [
             'product' => $product->load('images'),
             'categories' => Category::where('is_active', true)->get(),
+            'specialOffers' => SpecialOffer::where('is_active', true)->get(),
         ]);
     }
 

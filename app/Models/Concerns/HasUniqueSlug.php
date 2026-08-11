@@ -31,7 +31,7 @@ trait HasUniqueSlug
         $suffix = 2;
 
         while (static::query()
-            ->withTrashed()
+            ->when(in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive(static::class)), fn ($query) => $query->withTrashed())
             ->where('slug', $slug)
             ->when($ignoreId, fn ($query) => $query->whereKeyNot($ignoreId))
             ->exists()) {

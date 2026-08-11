@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\MagazineController as AdminMagazineController;
 use App\Http\Controllers\Admin\MagazinePurchaseController as AdminMagazinePurchaseController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\SpecialOfferController as AdminSpecialOfferController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SupportTicketController as AdminSupportTicketController;
 use App\Http\Controllers\Admin\VideoController as AdminVideoController;
@@ -127,6 +128,7 @@ Route::prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', DashboardController::class)->name('dashboard');
         Route::resource('categories', AdminCategoryController::class)->except('show');
         Route::resource('products', AdminProductController::class)->except('show');
+        Route::resource('special-offers', AdminSpecialOfferController::class)->except('show');
         Route::resource('blog-categories', AdminBlogCategoryController::class)->except('show');
         Route::resource('blogs', AdminBlogController::class)->except('show');
         Route::resource('videos', AdminVideoController::class)->except('show');

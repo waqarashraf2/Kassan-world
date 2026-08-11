@@ -3,6 +3,7 @@
     <div class="admin-card-head"><div><h2>Basic information</h2><p>English and Urdu product identity.</p></div></div>
     <div class="admin-field-grid">
         <label>Category<select name="category_id" required><option value="">Select category</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected(old('category_id',$editingProduct?->category_id)===$category->id)>{{ $category->name }}</option>@endforeach</select></label>
+        <label>Special Offer (Promotion)<select name="special_offer_id"><option value="">None / Regular Product</option>@foreach($specialOffers as $offer)<option value="{{ $offer->id }}" @selected(old('special_offer_id',$editingProduct?->special_offer_id)===$offer->id)>{{ $offer->name }} @if($offer->discount_percentage)({{ $offer->discount_percentage }}% Off)@endif</option>@endforeach</select></label>
         <label>SKU<input name="sku" value="{{ old('sku',$editingProduct?->sku) }}" maxlength="100"></label>
         <label>Product name<input name="name" value="{{ old('name',$editingProduct?->name) }}" required></label>
         <label>Urdu name<input name="name_ur" value="{{ old('name_ur',$editingProduct?->name_ur) }}" dir="rtl"></label>
@@ -27,6 +28,7 @@
         <label>Stock quantity<input type="number" min="0" name="stock_quantity" value="{{ old('stock_quantity',$editingProduct?->stock_quantity ?? 0) }}" required></label>
         <label class="admin-check-field"><input type="hidden" name="manage_stock" value="0"><input type="checkbox" name="manage_stock" value="1" @checked(old('manage_stock',$editingProduct?->manage_stock ?? true))> Manage stock</label>
         <label class="admin-check-field"><input type="hidden" name="is_featured" value="0"><input type="checkbox" name="is_featured" value="1" @checked(old('is_featured',$editingProduct?->is_featured))> Featured product</label>
+        <label class="admin-check-field"><input type="hidden" name="is_top" value="0"><input type="checkbox" name="is_top" value="1" @checked(old('is_top',$editingProduct?->is_top))> Top product</label>
         <label class="admin-check-field"><input type="hidden" name="is_active" value="0"><input type="checkbox" name="is_active" value="1" @checked(old('is_active',$editingProduct?->is_active ?? true))> Visible on website</label>
     </div>
 </section>

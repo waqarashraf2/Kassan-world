@@ -39,6 +39,68 @@
     <a href="#featured-products" class="scroll-cue" aria-label="Scroll to products"><span>Scroll to explore</span><i></i></a>
 </section>
 
+@if ($specialOffers->isNotEmpty())
+<section class="special-offers-section section-shell reveal" style="padding-top: 4rem; padding-bottom: 2rem;">
+    @foreach($specialOffers as $offer)
+        @if($offer->products->isNotEmpty())
+            <div class="special-offer-block" style="margin-bottom: 4rem;">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-kicker" style="color: #e67e22; font-weight: 600;">Seasnol Special Offer</span>
+                        <h2 style="margin-top: 0.5rem;">{{ $offer->name }} @if($offer->discount_percentage)<em style="color: #e67e22; font-style: normal;">({{ $offer->discount_percentage }}% Off)</em>@endif</h2>
+                        @if($offer->name_ur)
+                            <p class="urdu-subtitle" lang="ur" dir="rtl" style="font-size: 1.6rem; color: #27ae60; margin-top: 0.5rem; font-weight: bold;">{{ $offer->name_ur }}</p>
+                        @endif
+                    </div>
+                    @if($offer->description || $offer->description_ur)
+                        <div class="section-heading-side">
+                            @if($offer->description)
+                                <div style="font-size: 1.1rem; line-height: 1.6; color: var(--color-text-light);">{!! $offer->description !!}</div>
+                            @endif
+                            @if($offer->description_ur)
+                                <div lang="ur" dir="rtl" style="font-size: 1.2rem; line-height: 1.6; color: var(--color-text-light); margin-top: 0.5rem; font-weight: bold;">{!! $offer->description_ur !!}</div>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+                
+                @if($offer->banner_image)
+                    <div class="special-offer-banner" style="margin-bottom: 2rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <img src="{{ $offer->banner_image_url }}" alt="{{ $offer->name }}" style="width: 100%; height: auto; max-height: 350px; object-fit: cover; display: block;">
+                    </div>
+                @endif
+
+                <div class="product-grid" style="margin-top: 2rem;">
+                    @foreach($offer->products->take(4) as $offerProduct)
+                        <x-product-card :product="$offerProduct" />
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    @endforeach
+</section>
+@endif
+
+@if ($topProducts->isNotEmpty())
+<section id="top-products" class="products-section section-shell reveal" style="background: rgba(39, 174, 96, 0.05); padding-top: 4rem; padding-bottom: 4rem; border-radius: 16px; margin-top: 2rem; margin-bottom: 2rem;">
+    <div class="section-heading">
+        <div>
+            <span class="section-kicker" style="color: #27ae60; font-weight: 600;">Highly Recommended</span>
+            <h2>Top <em>Products</em></h2>
+            <p class="urdu-title" lang="ur" dir="rtl" style="font-size: 1.6rem; color: #27ae60; margin-top: 0.5rem; font-weight: bold;">بہترین اور اہم مصنوعات</p>
+        </div>
+        <div class="section-heading-side">
+            <p>Farmers' most-trusted fertilizers, seeds, and crop protection products hand-picked for quality performance.</p>
+        </div>
+    </div>
+    <div class="product-grid" style="margin-top: 2rem;">
+        @foreach($topProducts as $topProduct)
+            <x-product-card :product="$topProduct" />
+        @endforeach
+    </div>
+</section>
+@endif
+
 <section id="featured-products" class="products-section section-shell" aria-labelledby="products-title">
     <div class="section-heading reveal">
         <div><span class="section-kicker">Farm essentials</span><h2 id="products-title">Products for every <em>growing season</em></h2></div>

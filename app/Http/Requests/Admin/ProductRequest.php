@@ -18,6 +18,7 @@ class ProductRequest extends FormRequest
 
         return [
             'category_id' => ['required', 'exists:categories,id'],
+            'special_offer_id' => ['nullable', 'exists:special_offers,id'],
             'name' => ['required', 'string', 'max:255'],
             'name_ur' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('products')->ignore($product?->id)],
@@ -30,6 +31,7 @@ class ProductRequest extends FormRequest
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'manage_stock' => ['boolean'],
             'is_featured' => ['boolean'],
+            'is_top' => ['boolean'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],

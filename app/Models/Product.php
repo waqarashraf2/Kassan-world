@@ -31,6 +31,7 @@ class Product extends Model
             'discount_price' => 'decimal:2',
             'manage_stock' => 'boolean',
             'is_featured' => 'boolean',
+            'is_top' => 'boolean',
             'is_active' => 'boolean',
         ];
     }
@@ -48,6 +49,11 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function specialOffer(): BelongsTo
+    {
+        return $this->belongsTo(SpecialOffer::class);
     }
 
     public function images(): HasMany
