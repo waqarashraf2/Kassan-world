@@ -27,6 +27,8 @@ class SpecialOfferRequest extends FormRequest
             'is_active' => ['boolean'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'product_ids' => ['nullable', 'array'],
+            'product_ids.*' => ['integer', 'exists:products,id'],
         ];
     }
 }

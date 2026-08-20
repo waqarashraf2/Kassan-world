@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SpecialOfferRequest;
+use App\Models\Product;
 use App\Models\SpecialOffer;
 use App\Support\RichTextSanitizer;
 use Illuminate\Support\Arr;
@@ -16,19 +17,22 @@ class SpecialOfferController extends Controller
     public function index()
     {
         return view('admin.special-offers.index', [
-            'specialOffers' => SpecialOffer::latest()->paginate(20)
+            'specialOffers' => SpecialOffer::withCount('products')->latest()->paginate(20)
         ]);
     }
 
     public function create()
     {
-        return view('admin.special-offers.create');
+        return view('admin.special-offers.create', [
+            'products' => Product::orderBy('name')->get(['id', 'name', 'price', 'special_offer_id']),
+        ]);
     }
 
     public function store(SpecialOfferRequest $request)
     {
         $data = $request->validated();
         $bannerFile = Arr::pull($data, 'banner_image_file');
+        $productIds = Arr::pull($data, 'product_ids', []);
         
         $data['description'] = $this->sanitizer->sanitize($data['description'] ?? null);
         $data['description_ur'] = $this->sanitizer->sanitize($data['description_ur'] ?? null);
@@ -39,18 +43,26 @@ class SpecialOfferController extends Controller
 
         $specialOffer = SpecialOffer::create($data);
 
+        if (!empty($productIds)) {
+            Product::whereIn('id', $productIds)->update(['special_offer_id' => $specialOffer->id]);
+        }
+
         return redirect()->route('admin.special-offers.edit', $specialOffer)->with('success', __('Special offer created.'));
     }
 
     public function edit(SpecialOffer $specialOffer)
     {
-        return view('admin.special-offers.edit', compact('specialOffer'));
+        $specialOffer->load('products');
+        $products = Product::orderBy('name')->get(['id', 'name', 'price', 'special_offer_id']);
+
+        return view('admin.special-offers.edit', compact('specialOffer', 'products'));
     }
 
     public function update(SpecialOfferRequest $request, SpecialOffer $specialOffer)
     {
         $data = $request->validated();
         $bannerFile = Arr::pull($data, 'banner_image_file');
+        $productIds = Arr::pull($data, 'product_ids', []);
         
         $data['description'] = $this->sanitizer->sanitize($data['description'] ?? null);
         $data['description_ur'] = $this->sanitizer->sanitize($data['description_ur'] ?? null);
@@ -68,6 +80,16 @@ class SpecialOfferController extends Controller
         }
 
         $specialOffer->update($data);
+
+        // Remove association from products that were unchecked
+        Product::where('special_offer_id', $specialOffer->id)
+            ->whereNotIn('id', $productIds)
+            ->update(['special_offer_id' => null]);
+
+        // Assign newly selected products to this offer
+        if (!empty($productIds)) {
+            Product::whereIn('id', $productIds)->update(['special_offer_id' => $specialOffer->id]);
+        }
 
         return back()->with('success', __('Special offer updated.'));
     }

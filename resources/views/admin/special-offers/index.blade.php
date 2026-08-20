@@ -17,6 +17,7 @@
                     <th>Banner</th>
                     <th>Name</th>
                     <th>Discount</th>
+                    <th>Products</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Status</th>
@@ -44,6 +45,11 @@
                                 <span class="admin-status info">-</span>
                             @endif
                         </td>
+                        <td>
+                            <span class="admin-status {{ $offer->products_count > 0 ? 'completed' : 'info' }}">
+                                {{ $offer->products_count }} {{ Str::plural('Product', $offer->products_count) }}
+                            </span>
+                        </td>
                         <td>{{ $offer->start_date ? $offer->start_date->format('Y-m-d') : 'No limit' }}</td>
                         <td>{{ $offer->end_date ? $offer->end_date->format('Y-m-d') : 'No limit' }}</td>
                         <td>
@@ -58,7 +64,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="admin-empty">No special offers found.</td>
+                        <td colspan="8" class="admin-empty">No special offers found.</td>
                     </tr>
                 @endforelse
             </tbody>

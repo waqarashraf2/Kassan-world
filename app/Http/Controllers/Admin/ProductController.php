@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\SpecialOffer;
 use App\Support\RichTextSanitizer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;

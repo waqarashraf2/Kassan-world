@@ -58,3 +58,49 @@
         @endif
     </div>
 </section>
+
+@php
+    $selectedProductIds = old('product_ids', $editingOffer?->products ? $editingOffer->products->pluck('id')->toArray() : []);
+@endphp
+<section class="admin-form-card">
+    <div class="admin-card-head">
+        <div>
+            <h2>Assigned Products</h2>
+            <p>Select products included in this special offer (will appear on the homepage and show offer badges).</p>
+        </div>
+    </div>
+    <div style="margin-bottom: 1rem;">
+        <input type="text" id="offerProductSearch" placeholder="Type to filter products..." style="max-width: 400px; padding: 0.5rem 0.8rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9rem;">
+    </div>
+    <div class="admin-field-grid" id="offerProductsList" style="max-height: 350px; overflow-y: auto; padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 8px; background: #fafafa;">
+        @forelse($products ?? [] as $product)
+            <label class="admin-check-field product-item-filter" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px;" data-name="{{ strtolower($product->name) }}">
+                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" @checked(in_array($product->id, $selectedProductIds))>
+                <span>
+                    <strong>{{ $product->name }}</strong>
+                    <small style="color: #6b7280; margin-left: 0.5rem;">(Rs. {{ number_format($product->price, 0) }})</small>
+                    @if($product->special_offer_id && $product->special_offer_id !== $editingOffer?->id)
+                        <small style="color: #e67e22; margin-left: 0.5rem;">[Currently in another offer]</small>
+                    @endif
+                </span>
+            </label>
+        @empty
+            <p style="color: #6b7280; font-size: 0.9rem;">No products available yet.</p>
+        @endforelse
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('offerProductSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            document.querySelectorAll('#offerProductsList .product-item-filter').forEach(item => {
+                const name = item.getAttribute('data-name') || '';
+                item.style.display = name.includes(query) ? 'flex' : 'none';
+            });
+        });
+    }
+});
+</script>
