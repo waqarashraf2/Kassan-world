@@ -42,43 +42,41 @@
 @if ($specialOffers->isNotEmpty())
 <section class="special-offers-section section-shell reveal" style="padding-top: 4rem; padding-bottom: 2rem;">
     @foreach($specialOffers as $offer)
-        @if($offer->products->isNotEmpty() || $offer->banner_image || $offer->description || $offer->description_ur)
-            <div class="special-offer-block" style="margin-bottom: 4rem; background: #fff; border: 1px solid rgba(230, 126, 34, 0.2); border-radius: 16px; padding: 2.5rem 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
-                <div class="section-heading" style="margin-bottom: 2rem;">
-                    <div>
-                        <span class="section-kicker" style="color: #e67e22; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Seasonal Special Offer</span>
-                        <h2 style="margin-top: 0.5rem;">{{ $offer->name }} @if($offer->discount_percentage)<em style="color: #e67e22; font-style: normal;">({{ $offer->discount_percentage }}% Off)</em>@endif</h2>
-                        @if($offer->name_ur)
-                            <p class="urdu-subtitle" lang="ur" dir="rtl" style="font-size: 1.6rem; color: #27ae60; margin-top: 0.5rem; font-weight: bold;">{{ $offer->name_ur }}</p>
-                        @endif
-                    </div>
-                    @if($offer->description || $offer->description_ur)
-                        <div class="section-heading-side">
-                            @if($offer->description)
-                                <div style="font-size: 1.1rem; line-height: 1.6; color: var(--color-text-light);">{!! $offer->description !!}</div>
-                            @endif
-                            @if($offer->description_ur)
-                                <div lang="ur" dir="rtl" style="font-size: 1.2rem; line-height: 1.6; color: var(--color-text-light); margin-top: 0.5rem; font-weight: bold;">{!! $offer->description_ur !!}</div>
-                            @endif
-                        </div>
+        <div class="special-offer-block" style="margin-bottom: 4rem; background: #fff; border: 1px solid rgba(230, 126, 34, 0.2); border-radius: 16px; padding: 2.5rem 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+            <div class="section-heading" style="margin-bottom: 2rem;">
+                <div>
+                    <span class="section-kicker" style="color: #e67e22; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Seasonal Special Offer</span>
+                    <h2 style="margin-top: 0.5rem;">{{ $offer->name }} @if($offer->discount_percentage)<em style="color: #e67e22; font-style: normal;">({{ $offer->discount_percentage }}% Off)</em>@endif</h2>
+                    @if($offer->name_ur)
+                        <p class="urdu-subtitle" lang="ur" dir="rtl" style="font-size: 1.6rem; color: #27ae60; margin-top: 0.5rem; font-weight: bold;">{{ $offer->name_ur }}</p>
                     @endif
                 </div>
-                
-                @if($offer->banner_image)
-                    <div class="special-offer-banner" style="margin-bottom: 2rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                        <img src="{{ $offer->banner_image_url }}" alt="{{ $offer->name }}" style="width: 100%; height: auto; max-height: 380px; object-fit: cover; display: block;" onerror="this.parentElement.style.display='none'">
-                    </div>
-                @endif
-
-                @if($offer->products->isNotEmpty())
-                    <div class="product-grid" style="margin-top: 2rem;">
-                        @foreach($offer->products->take(4) as $offerProduct)
-                            <x-product-card :product="$offerProduct" />
-                        @endforeach
+                @if($offer->description || $offer->description_ur)
+                    <div class="section-heading-side">
+                        @if($offer->description)
+                            <div style="font-size: 1.1rem; line-height: 1.6; color: var(--color-text-light);">{!! $offer->description !!}</div>
+                        @endif
+                        @if($offer->description_ur)
+                            <div lang="ur" dir="rtl" style="font-size: 1.2rem; line-height: 1.6; color: var(--color-text-light); margin-top: 0.5rem; font-weight: bold;">{!! $offer->description_ur !!}</div>
+                        @endif
                     </div>
                 @endif
             </div>
-        @endif
+            
+            @if($offer->banner_image)
+                <div class="special-offer-banner" style="margin-bottom: 2rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <img src="{{ $offer->banner_image_url }}" alt="{{ $offer->name }}" style="width: 100%; height: auto; max-height: 380px; object-fit: cover; display: block;" onerror="this.parentElement.style.display='none'">
+                </div>
+            @endif
+
+            @if($offer->products->isNotEmpty())
+                <div class="product-grid" style="margin-top: 2rem;">
+                    @foreach($offer->products->take(4) as $offerProduct)
+                        <x-product-card :product="$offerProduct" />
+                    @endforeach
+                </div>
+            @endif
+        </div>
     @endforeach
 </section>
 @endif
