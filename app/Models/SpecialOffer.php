@@ -36,15 +36,7 @@ class SpecialOffer extends Model
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('is_active', true)
-            ->where(function ($q) {
-                $q->whereNull('start_date')
-                  ->orWhereDate('start_date', '<=', now());
-            })
-            ->where(function ($q) {
-                $q->whereNull('end_date')
-                  ->orWhereDate('end_date', '>=', now());
-            });
+        return $query->where('is_active', true);
     }
 
     public function products(): HasMany
